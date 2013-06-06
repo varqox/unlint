@@ -303,7 +303,6 @@ int main()
 	get(a);
 	get(b);
 	echo(a*=b);
-	//echo(a);
 	cout << endl;
 return 0;
 }
