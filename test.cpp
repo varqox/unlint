@@ -302,7 +302,6 @@ int main()
 	num b;
 	get(a);
 	get(b);
-	//echo(a);
 	echo(a*=b);
 	//echo(a);
 	cout << endl;
