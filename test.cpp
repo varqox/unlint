@@ -304,10 +304,7 @@ int main()
 	get(b);
 	//echo(a);
 	echo(a*=b);
-	/*for(int i=0; i<10; ++i)
-		a*=b;*/
 	//echo(a);
 	cout << endl;
-	//cout << "\nBodzio!\n";
 return 0;
 }
