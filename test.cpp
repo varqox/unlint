@@ -303,7 +303,6 @@ int main()
 	get(a);
 	get(b);
 	//echo(a);
-	//cin >> b;
 	echo(a*=b);
 	/*for(int i=0; i<10; ++i)
 		a*=b;*/
