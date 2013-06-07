@@ -27,7 +27,6 @@ public:
 	num(const num& _n): w(_n.w){}
 	void kas0();
 	void swap(num& _n){this->w.swap(_n.w);}
-	void nwd(const num&);
 	num& operator++();
 	num& operator--();
 	num& operator+=(const num&);
@@ -38,13 +37,14 @@ public:
 	num& operator*=(const num&);
 	num& operator/=(const num&);
 	num& operator%=(const num&);
+	void nwd(const num&);
 	num& pow(const num&);
-	bool operator<(const num&);
-	bool operator>(const num&);
-	bool operator<=(const num&);
-	bool operator>=(const num&);
-	bool operator==(const num&);
-	bool operator!=(const num&);
+	bool operator<(const num&) const;
+	bool operator>(const num&) const;
+	bool operator<=(const num&) const;
+	bool operator>=(const num&) const;
+	bool operator==(const num&) const;
+	bool operator!=(const num&) const;
 };
 
 void /*unlint::*/num::kas0()
@@ -55,19 +55,6 @@ void /*unlint::*/num::kas0()
 	this->w.erase(i, this->w.end());
 }
 
-void /*unlint::*/num::nwd(const num& _n)
-{
-	vector<lli> b=_n.w, zero(1), c;
-	while(b!=zero)
-	{
-		c.swap(this->w);
-	#ifndef DEBUG
-		c%=b;
-	#endif
-		this->w.swap(b);
-		b.swap(c);
-	}
-}
 
 num& /*unlint::*/num::operator++()
 {
@@ -265,6 +252,228 @@ num& /*unlint::*/num::operator*=(const num& b)
 return *this;
 }
 
+num& /*unlint*/num::operator/=(const num& _n)
+{
+	if(this->operator<(_n))
+	{
+		vector<lli>(1,0).swap(this->w);
+		return *this;
+	}
+	else if(_n.w.size()==1 && _n.w[0]==1) return *this;
+	int wl=this->w.size(), nl=_n.w.size(), iws=wl-nl;
+	vector<num::fmod> nmd;
+	_n.gen_mod(nmd);
+	num k, w;
+	w.w.resize(iws+1);
+	bool is_grader;
+	while(iws>=0)
+	{
+		if(wl-iws<nl) is_grader=false;
+		else if(wl-iws>nl) is_grader=true;
+		else
+		{
+			int i=nl-1;
+			while(i>=0 && this->w[i+iws]==_n.w[i])
+				--i;
+			if(i<0 || this->w[i+iws]>_n.w[i]) is_grader=true;
+			else is_grader=false;
+		}
+		if(is_grader)
+		{
+			lli down=0, up=BASE-1, mean;
+			while(down<up)
+			{
+				mean=1+(down+up)>>1;
+				k.mult(mean, nmd);
+				int kl=k.w.size();
+				if(wl-iws<kl) is_grader=true;
+				else if(wl-iws>kl) is_grader=false;
+				else
+				{
+					int i=kl-1;
+					while(i>=0 && this->w[i+iws]==k.w[i])
+						--i;
+					if(i<0) is_grader=false;
+					else if(k.w[i]>this->w[i+iws]) is_grader=true;
+					else is_grader=false;
+				}
+				if(is_grader) up=--mean;
+				else down=mean;
+			}
+			k.mult(down, nmd);
+			int gl=k.w.size();
+			bool add=0;
+			for(int i=0; i<gl; ++i)
+			{
+				this->w[i+iws]-=k.w[i];
+				if(add) --this->w[i+iws];
+				if(this->w[i+iws]<0)
+				{
+					this->w[i+iws]+=BASE;
+					add=true;
+				}
+				else add=false;
+			}
+			for(int i=gl+iws; i<wl; ++i)
+			{
+				if(add) --this->w[i];
+				if(this->w[i]<0)
+				{
+					this->w[i]+=BASE;
+					add=true;
+				}
+				else break;
+			}
+			this->kas0();
+			wl=this->w.size();
+			w.w[iws]=down;
+		}
+		--iws;
+	}
+	w.kas0();
+	this->swap(w);
+return *this;
+}
+
+num& /*unlint*/num::operator%=(const num& _n)
+{
+	if(this->operator<(_n))
+		return *this;
+	else if(_n.w.size()==1 && _n.w[0]==1)
+	{
+		vector<lli>(1,0).swap(this->w);
+		return *this;
+	}
+	int wl=this->w.size(), nl=_n.w.size(), iws=wl-nl;
+	vector<num::fmod> nmd;
+	_n.gen_mod(nmd);
+	num k;
+	bool is_grader;
+	while(iws>=0)
+	{
+		if(wl-iws<nl) is_grader=false;
+		else if(wl-iws>nl) is_grader=true;
+		else
+		{
+			int i=nl-1;
+			while(i>=0 && this->w[i+iws]==_n.w[i])
+				--i;
+			if(i<0 || this->w[i+iws]>_n.w[i]) is_grader=true;
+			else is_grader=false;
+		}
+		if(is_grader)
+		{
+			lli down=0, up=BASE-1, mean;
+			while(down<up)
+			{
+				mean=1+(down+up)>>1;
+				k.mult(mean, nmd);
+				int kl=k.w.size();
+				if(wl-iws<kl) is_grader=true;
+				else if(wl-iws>kl) is_grader=false;
+				else
+				{
+					int i=kl-1;
+					while(i>=0 && this->w[i+iws]==k.w[i])
+						--i;
+					if(i<0) is_grader=false;
+					else if(k.w[i]>this->w[i+iws]) is_grader=true;
+					else is_grader=false;
+				}
+				if(is_grader) up=--mean;
+				else down=mean;
+			}
+			k.mult(down, nmd);
+			int gl=k.w.size();
+			bool add=0;
+			for(int i=0; i<gl; ++i)
+			{
+				this->w[i+iws]-=k.w[i];
+				if(add) --this->w[i+iws];
+				if(this->w[i+iws]<0)
+				{
+					this->w[i+iws]+=BASE;
+					add=true;
+				}
+				else add=false;
+			}
+			for(int i=gl+iws; i<wl; ++i)
+			{
+				if(add) --this->w[i];
+				if(this->w[i]<0)
+				{
+					this->w[i]+=BASE;
+					add=true;
+				}
+				else break;
+			}
+			this->kas0();
+			wl=this->w.size();
+		}
+		--iws;
+	}
+return *this;
+}
+
+void echo(const num&);
+
+void /*unlint::*/num::nwd(const num& _n)
+{
+	num b=_n, zero(0), c;
+	int i=0;
+	while(b!=zero)
+	{
+		c.swap(*this);
+		c%=b;
+		this->swap(b);
+		b.swap(c);
+	}
+}
+
+bool /*unlint::*/num::operator<(const num& _n) const
+{
+	int i=this->w.size();
+	if(i<_n.w.size()) return true;
+	else if(i>_n.w.size()) return false;
+	--i;
+	while(i>=0 && this->w[i]==_n.w[i])
+		--i;
+	if(i<0) return false;
+	if(this->w[i]>_n.w[i]) return false;
+return true;
+}
+
+bool /*unlint::*/num::operator>(const num& _n) const
+{
+return _n<*this;
+}
+
+bool /*unlint::*/num::operator<=(const num& _n) const
+{
+return !(_n<*this);
+}
+
+bool /*unlint::*/num::operator>=(const num& _n) const
+{
+return !this->operator<(_n);
+}
+
+bool /*unlint::*/num::operator==(const num& _n) const
+{
+	int i=this->w.size();
+	if(i!=_n.w.size()) return false;
+	--i;
+	while(i>=0 && this->w[i]==_n.w[i])
+		--i;
+	if(i<0) return true;
+return false;
+}
+
+bool /*unlint::*/num::operator!=(const num& _n) const
+{
+return !this->operator==(_n);
+}
+
 void echo(const num& a)
 {
 	int k=a.w.size()-1;
@@ -302,7 +511,8 @@ int main()
 	num b;
 	get(a);
 	get(b);
-	echo(a*=b);
+	a.nwd(b);
+	echo(a);
 	cout << endl;
 return 0;
 }
