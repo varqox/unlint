@@ -1,4 +1,4 @@
 [Project]
-Name=unlint
 Manager=KDevCMakeManager
+Name=unlint
 VersionControl=
