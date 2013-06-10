@@ -13,7 +13,7 @@ Build Type=Release
 CMake Binary=file:///usr/bin/cmake
 Environment Profile=
 Extra Arguments=
-Install Directory=
+Install Directory=file:///usr/local
 
 [Project]
 VersionControlSupport=kdevgit

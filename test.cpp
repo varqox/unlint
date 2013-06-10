@@ -34,6 +34,8 @@ public:
 	num& operator*=(const lli&);
 	num& mult(const lli&, const vector<fmod>&);
 	void gen_mod(vector<fmod>&) const;
+	void to_old_type(vector<int>&) const;
+	num& from_old_type(vector<int>&) const;
 	num& operator*=(const num&);
 	num& operator/=(const num&);
 	num& operator%=(const num&);
@@ -504,14 +506,130 @@ void get(num& a)
 	}
 	a.kas0();
 }
+/*
+class lol
+{
+public:
+	vector<char> w;
+	void get();
+	void echo();
+	void kas0();
+	lol& operator%=(const lol&);
+};
 
+void lol::kas0()
+{
+	vector<char>::iterator i=this->w.end()-1;
+	while(i!=this->w.begin() && *i==0) --i;
+	++i;
+	this->w.erase(i, this->w.end());
+}
+
+void lol::get()
+{
+	string a;
+	cin >> a;
+	w.resize(a.size());
+	vector<char>::iterator wi=this->w.begin();
+	for(int i=a.size()-1; i>=0; --i,++wi)
+		*wi=a[i]-'0';
+}
+
+void lol::echo()
+{
+	for(int i=this->w.size()-1; i>=0; --i)
+		cout << static_cast<char>(this->w[i]+'0');
+}
+
+lol& lol::operator%=(const lol& _n)
+{
+	int nl=_n.w.size(), wl=this->w.size(), iws=wl-nl;
+	vector<char> tab[10];
+	tab[1]=_n.w;
+	for(int i=2; i<10; ++i)
+	{
+		tab[i].resize(nl);
+		char add=0;
+		for(int j=0; j<nl; ++j)
+		{
+			tab[i][j]=i*_n.w[j]+add;
+			add=tab[i][j]/10;
+			tab[i][j]-=10*add;
+		}
+		if(add) tab[i].push_back(add);
+	}
+	bool is_grader;
+	while(iws>=0)
+	{
+		if(wl-iws<nl) is_grader=false;
+		else if(wl-iws>nl) is_grader=true;
+		else
+		{
+			int i=nl-1;
+			while(i>=0 && this->w[i+iws]==_n.w[i])
+				--i;
+			if(i<0 || this->w[i+iws]>_n.w[i]) is_grader=true;
+			else is_grader=false;
+		}
+		if(is_grader)
+		{
+			int down=1, up=9, mean;
+			while(down<up)
+			{
+				mean=1+(down+up)>>1;
+				int kl=tab[mean].size();
+				if(wl-iws<kl) is_grader=true;
+				else if(wl-iws>kl) is_grader=false;
+				else
+				{
+					int i=kl-1;
+					while(i>=0 && this->w[i+iws]==tab[mean][i])
+						--i;
+					if(i<0) is_grader=false;
+					else if(tab[mean][i]>this->w[i+iws]) is_grader=true;
+					else is_grader=false;
+				}
+				if(is_grader) up=--mean;
+				else down=mean;
+			}
+			int gl=tab[up].size();
+			bool add=false;
+			for(int i=0; i<gl; ++i)
+			{
+				this->w[i+iws]-=tab[up][i];
+				if(add) --this->w[i+iws];
+				if(this->w[i+iws]<0)
+				{
+					this->w[i+iws]+=10;
+					add=true;
+				}
+				else add=false;
+			}
+			for(int i=gl+iws; i<wl; ++i)
+			{
+				if(add) --this->w[i];
+				if(this->w[i]<0)
+				{
+					this->w[i]+=10;
+					add=true;
+				}
+				else break;
+			}
+			this->kas0();
+			wl=this->w.size();
+		}
+		--iws;
+	}
+return *this;
+}
+*/
 int main()
 {
 	num a;
 	num b;
 	get(a);
 	get(b);
-	a.nwd(b);
+	a%=b;//a.nwd(b);
 	echo(a);
 	cout << endl;
 return 0;

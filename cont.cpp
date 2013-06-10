@@ -1321,7 +1321,9 @@ int main()
 {
 	unlint a, b;
 	cin >> a >> b;
-	cout << nwd(a,b) << endl;
+	a%=b;
+	cout << a << endl;
+	//cout << nwd(a,b) << endl;
 	/*for(int i=0; i<10; ++i)
 		a*=b;*/
 return 0;
