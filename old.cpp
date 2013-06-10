@@ -35,7 +35,7 @@ public:
 	void gen_mod(vector<fmod>&) const;
 	num& mult(const lli&, const vector<fmod>&);
 	void to_old_type(vector<int>&) const;
-	num& from_old_type(vector<int>&);
+	num& from_old_type(vector<int>&) const;
 	num& operator*=(const num&);
 	num& operator/=(const num&);
 	num& operator%=(const num&);
@@ -211,7 +211,7 @@ return *this;
 
 void old_kas0(vector<int>& _n)
 {
-	vector<int>::iterator i=_n.end()-1;
+	vector<lli>::iterator i=_n.end()-1;
 	while(i!=_n.begin() && *i==0) --i;
 	++i;
 	_n.erase(i, _n.end());
@@ -229,7 +229,7 @@ void num::to_old_type(vector<int>& _n) const
 	old_kas0(_n);
 }
 
-num& num::from_old_type(vector<int>& _n)
+num& num::from_old_type(vector<int>& _n) const
 {
 	int nl=_n.size();
 	this->w.resize((1+nl)>>1);
@@ -308,6 +308,7 @@ void div(vector<int>& a, vector<int>& b)
 			return;
 		}
 	}
+	int al=a.size(), bl=b.size(), iws=al-bl;
 	vector<int> w(iws+1), g;
 	while(iws>=0)
 	{
@@ -510,21 +511,164 @@ void mod(vector<int>& a, vector<int>& b)
 
 num& /*unlint*/num::operator/=(const num& _n)
 {
-	vector<int> a,b;
-	this->to_old_type(a);
-	this->to_old_type(b);
-	div(a,b);
-	this->from_old_type(a);
+	if(this->operator<(_n))
+	{
+		vector<lli>(1,0).swap(this->w);
+		return *this;
+	}
+	else if(_n.w.size()==1 && _n.w[0]==1) return *this;
+	int wl=this->w.size(), nl=_n.w.size(), iws=wl-nl;
+	vector<num::fmod> nmd;
+	_n.gen_mod(nmd);
+	num k, w;
+	w.w.resize(iws+1);
+	bool is_grader;
+	while(iws>=0)
+	{
+		if(wl-iws<nl) is_grader=false;
+		else if(wl-iws>nl) is_grader=true;
+		else
+		{
+			int i=nl-1;
+			while(i>=0 && this->w[i+iws]==_n.w[i])
+				--i;
+			if(i<0 || this->w[i+iws]>_n.w[i]) is_grader=true;
+			else is_grader=false;
+		}
+		if(is_grader)
+		{
+			lli down=0, up=BASE-1, mean;
+			while(down<up)
+			{
+				mean=1+(down+up)>>1;
+				k.mult(mean, nmd);
+				int kl=k.w.size();
+				if(wl-iws<kl) is_grader=true;
+				else if(wl-iws>kl) is_grader=false;
+				else
+				{
+					int i=kl-1;
+					while(i>=0 && this->w[i+iws]==k.w[i])
+						--i;
+					if(i<0) is_grader=false;
+					else if(k.w[i]>this->w[i+iws]) is_grader=true;
+					else is_grader=false;
+				}
+				if(is_grader) up=--mean;
+				else down=mean;
+			}
+			k.mult(down, nmd);
+			int gl=k.w.size();
+			bool add=0;
+			for(int i=0; i<gl; ++i)
+			{
+				this->w[i+iws]-=k.w[i];
+				if(add) --this->w[i+iws];
+				if(this->w[i+iws]<0)
+				{
+					this->w[i+iws]+=BASE;
+					add=true;
+				}
+				else add=false;
+			}
+			for(int i=gl+iws; i<wl; ++i)
+			{
+				if(add) --this->w[i];
+				if(this->w[i]<0)
+				{
+					this->w[i]+=BASE;
+					add=true;
+				}
+				else break;
+			}
+			this->kas0();
+			wl=this->w.size();
+			w.w[iws]=down;
+		}
+		--iws;
+	}
+	w.kas0();
+	this->swap(w);
 return *this;
 }
 
 num& /*unlint*/num::operator%=(const num& _n)
 {
-	vector<int> a,b;
-	this->to_old_type(a);
-	this->to_old_type(b);
-	mod(a,b);
-	this->from_old_type(a);
+	if(this->operator<(_n))
+		return *this;
+	else if(_n.w.size()==1 && _n.w[0]==1)
+	{
+		vector<lli>(1,0).swap(this->w);
+		return *this;
+	}
+	int wl=this->w.size(), nl=_n.w.size(), iws=wl-nl;
+	vector<num::fmod> nmd;
+	_n.gen_mod(nmd);
+	num k;
+	bool is_grader;
+	while(iws>=0)
+	{
+		if(wl-iws<nl) is_grader=false;
+		else if(wl-iws>nl) is_grader=true;
+		else
+		{
+			int i=nl-1;
+			while(i>=0 && this->w[i+iws]==_n.w[i])
+				--i;
+			if(i<0 || this->w[i+iws]>_n.w[i]) is_grader=true;
+			else is_grader=false;
+		}
+		if(is_grader)
+		{
+			lli down=0, up=BASE-1, mean;
+			while(down<up)
+			{
+				mean=1+(down+up)>>1;
+				k.mult(mean, nmd);
+				int kl=k.w.size();
+				if(wl-iws<kl) is_grader=true;
+				else if(wl-iws>kl) is_grader=false;
+				else
+				{
+					int i=kl-1;
+					while(i>=0 && this->w[i+iws]==k.w[i])
+						--i;
+					if(i<0) is_grader=false;
+					else if(k.w[i]>this->w[i+iws]) is_grader=true;
+					else is_grader=false;
+				}
+				if(is_grader) up=--mean;
+				else down=mean;
+			}
+			k.mult(down, nmd);
+			int gl=k.w.size();
+			bool add=0;
+			for(int i=0; i<gl; ++i)
+			{
+				this->w[i+iws]-=k.w[i];
+				if(add) --this->w[i+iws];
+				if(this->w[i+iws]<0)
+				{
+					this->w[i+iws]+=BASE;
+					add=true;
+				}
+				else add=false;
+			}
+			for(int i=gl+iws; i<wl; ++i)
+			{
+				if(add) --this->w[i];
+				if(this->w[i]<0)
+				{
+					this->w[i]+=BASE;
+					add=true;
+				}
+				else break;
+			}
+			this->kas0();
+			wl=this->w.size();
+		}
+		--iws;
+	}
 return *this;
 }
 
