@@ -1321,7 +1321,7 @@ int main()
 {
 	unlint a, b;
 	cin >> a >> b;
-	a%=b;
+	a/=b;
 	cout << a << endl;
 	//cout << nwd(a,b) << endl;
 	/*for(int i=0; i<10; ++i)

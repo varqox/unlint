@@ -7,8 +7,7 @@
 using namespace std;
 
 typedef long long int lli;
-const lli BASE=1000000000000000000LL;
-const int BS2=1000000000;
+const lli BASE=1000000000000000000LL, BS2=1000000000;
 const char LEN=18;
 
 class num
@@ -223,8 +222,8 @@ void num::to_old_type(vector<int>& _n) const
 	_n.resize(wl<<1);
 	for(int i=0; i<wl; ++i)
 	{
-		_n[i<<1]=this->w[i]/BS2;
-		_n[1+i<<1]=this->w[i]-_n[i<<1]*BS2;
+		_n[(i<<1)+1]=this->w[i]/BS2;
+		_n[(i<<1)]=this->w[i]-_n[(i<<1)+1]*BS2;
 	}
 	old_kas0(_n);
 }
@@ -232,11 +231,11 @@ void num::to_old_type(vector<int>& _n) const
 num& num::from_old_type(vector<int>& _n)
 {
 	int nl=_n.size();
-	this->w.resize((1+nl)>>1);
+	this->w.resize((nl+1)>>1);
 	for(int i=0; i<nl; i+=2)
 		w[i>>1]=_n[i];
 	for(int i=1; i<nl; i+=2)
-		w[i>>1]=_n[i]*BS2;
+		w[i>>1]+=_n[i]*BS2;
 return *this;
 }
 
@@ -330,11 +329,12 @@ void div(vector<int>& a, vector<int>& b)
 				mean=1+(down+up)>>1;
 				//g=b*mean;
 				{
-					int gl=g.size();
+					g.resize(bl);
+					int gl=bl;
 					lli tmp, add=0;
 					for (int i=0; i<gl; ++i)
                     {
-                        tmp=static_cast<lli>(g[i])*mean+add;
+                        tmp=static_cast<lli>(b[i])*mean+add;
                         add=tmp/BS2;
                         g[i]=tmp-add*BS2;
                     }
@@ -358,11 +358,12 @@ void div(vector<int>& a, vector<int>& b)
 			}
 			//g=b*down;
 			{
-				int gl=g.size();
+				g.resize(bl);
+				int gl=bl;
 				lli tmp, add=0;
 				for (int i=0; i<gl; ++i)
 				{
-					tmp=static_cast<lli>(g[i])*down+add;
+					tmp=static_cast<lli>(b[i])*down+add;
 					add=tmp/BS2;
 					g[i]=tmp-add*BS2;
 				}
@@ -376,7 +377,7 @@ void div(vector<int>& a, vector<int>& b)
 				a[i+iws]-=g[i]+add;
 				if(a[i+iws]<0)
 				{
-					a[i+iws]+=BASE;
+					a[i+iws]+=BS2;
 					add=true;
 				}
 				else add=false;
@@ -384,7 +385,7 @@ void div(vector<int>& a, vector<int>& b)
 			for(int i=gl+iws; i<al; ++i)
 			{
 				--a[i];
-				if(a[i]<0) a[i]+=BASE;
+				if(a[i]<0) a[i]+=BS2;
 				else break;
 			}
 			old_kas0(a);
@@ -420,7 +421,7 @@ void mod(vector<int>& a, vector<int>& b)
 		}
 		if(!is_grader) return;
 	}
-	vector<int> w(iws+1), g;
+	vector<int> g;
 	while(iws>=0)
 	{
 		bool is_grader;
@@ -442,11 +443,12 @@ void mod(vector<int>& a, vector<int>& b)
 				mean=1+(down+up)>>1;
 				//g=b*mean;
 				{
-					int gl=g.size();
+					g.resize(bl);
+					int gl=bl;
 					lli tmp, add=0;
 					for (int i=0; i<gl; ++i)
                     {
-                        tmp=static_cast<lli>(g[i])*mean+add;
+                        tmp=static_cast<lli>(b[i])*mean+add;
                         add=tmp/BS2;
                         g[i]=tmp-add*BS2;
                     }
@@ -470,11 +472,12 @@ void mod(vector<int>& a, vector<int>& b)
 			}
 			//g=b*down;
 			{
-				int gl=g.size();
+				g.resize(bl);
+				int gl=bl;
 				lli tmp, add=0;
 				for (int i=0; i<gl; ++i)
 				{
-					tmp=static_cast<lli>(g[i])*down+add;
+					tmp=static_cast<lli>(b[i])*down+add;
 					add=tmp/BS2;
 					g[i]=tmp-add*BS2;
 				}
@@ -488,7 +491,7 @@ void mod(vector<int>& a, vector<int>& b)
 				a[i+iws]-=g[i]+add;
 				if(a[i+iws]<0)
 				{
-					a[i+iws]+=BASE;
+					a[i+iws]+=BS2;
 					add=true;
 				}
 				else add=false;
@@ -496,12 +499,11 @@ void mod(vector<int>& a, vector<int>& b)
 			for(int i=gl+iws; i<al; ++i)
 			{
 				--a[i];
-				if(a[i]<0) a[i]+=BASE;
+				if(a[i]<0) a[i]+=BS2;
 				else break;
 			}
 			old_kas0(a);
 			al=a.size();
-			w[iws]=down;
 		}
 		--iws;
 	}
@@ -512,7 +514,7 @@ num& /*unlint*/num::operator/=(const num& _n)
 {
 	vector<int> a,b;
 	this->to_old_type(a);
-	this->to_old_type(b);
+	_n.to_old_type(b);
 	div(a,b);
 	this->from_old_type(a);
 return *this;
@@ -522,7 +524,7 @@ num& /*unlint*/num::operator%=(const num& _n)
 {
 	vector<int> a,b;
 	this->to_old_type(a);
-	this->to_old_type(b);
+	_n.to_old_type(b);
 	mod(a,b);
 	this->from_old_type(a);
 return *this;
@@ -532,15 +534,19 @@ void echo(const num&);
 
 void /*unlint::*/num::nwd(const num& _n)
 {
-	num b=_n, zero(0), c;
-	int i=0;
-	while(b!=zero)
+	vector<int> a, b, c;
+	this->to_old_type(a);
+	_n.to_old_type(b);
+	while(!(b.size()==1 && b[0]==0))
 	{
-		c.swap(*this);
-		c%=b;
-		this->swap(b);
+		c.swap(a);
+		mod(c,b);
+		a.swap(b);
 		b.swap(c);
 	}
+	vector<int>().swap(b);
+	vector<int>().swap(c);
+	this->from_old_type(a);
 }
 
 bool /*unlint::*/num::operator<(const num& _n) const
@@ -734,14 +740,44 @@ lol& lol::operator%=(const lol& _n)
 return *this;
 }
 */
+void wypisz(vector<int> a)
+{
+	int k=a.size()-1;
+	cout << a[k];
+	for(int i=k-1; i>=0; i--)
+	{
+		cout.width(9);
+		cout.fill('0');
+		cout << a[i];
+	}
+}
 int main()
 {
+#ifdef debug
+	num a, b;
+	get(a);
+	get(b);
+	vector<int> k, l;
+	a.to_old_type(k);
+	b.to_old_type(l);
+	wypisz(k);
+	cout << endl;
+	wypisz(l);
+	cout << endl;
+	mod(k,l);
+	wypisz(k);
+	cout << endl;
+	a.from_old_type(k);
+	echo(a);
+	cout << endl;
+#else
 	num a;
 	num b;
 	get(a);
 	get(b);
-	a%=b;//a.nwd(b);
+	a/=b;
 	echo(a);
 	cout << endl;
+#endif
 return 0;
 }
