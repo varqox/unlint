@@ -649,4 +649,22 @@ namespace unlimited_int
 		uli=str;
 	return is;
 	}
+
+	unlint::unlint(): w(new num){}
+
+	unlint::~unlint(){delete w;}
+
+	unlint::unlint(lli k): z(true)
+	{
+		if(k<0) this->z=false;
+		lli f=k/BASE;
+		if(f>0) w->w.push_back(f);
+		w->w[0]=k-f*BASE;
+	}
+
+	unlint::unlint(const char* cstr)
+	{
+		int lenght=strlen(str);
+	}
+
 }

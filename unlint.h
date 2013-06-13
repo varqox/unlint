@@ -14,26 +14,16 @@ namespace unlimited_int
 		bool z; // znak
 		num* w; // wartość
 	public:
-		unlint(){};
-		~unlint(){}
-		unlint(bool);
-		unlint(char);
-		unlint(unsigned char);
-		unlint(short int);
-		unlint(unsigned short int);
-		unlint(int);
-		unlint(unsigned int);
-		unlint(long int);
-		unlint(unsigned long int);
+		unlint();
+		~unlint();
 		unlint(long long int);
-		unlint(unsigned long long int);
 		unlint(const char*);
 		unlint(const std::string&);
 		unlint(const unlint&);
-		template<typename type>
-		unlint& operator=(type a);
 		int size() const;
 		void swap(unlint&);
+		template<typename type>
+		unlint& operator=(type a);
 		std::string& str() const;
 		const char* c_str() const;
 		unlint& operator++();
