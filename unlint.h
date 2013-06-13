@@ -7,15 +7,14 @@
 
 namespace unlimited_int
 {
-	const char LEN=18;
 	class unlint
 	{
 	private:
 		class num;
 		bool z; // znak
-		num w; // wartość
+		num* w; // wartość
 	public:
-		unlint();
+		unlint(){};
 		~unlint(){}
 		unlint(bool);
 		unlint(char);
@@ -61,39 +60,22 @@ namespace unlimited_int
 		bool operator!=(const unlint&) const;
 		unlint& pow(const unlint&);
 		unlint& factorial();
-		friend unlint& nwd(const unlint&,const unlint&);
-		/* output unlint with istream */
+		friend unlint& nwd(const unlint&, const unlint&);
+		/* output unlint with ostream */
 		template<typename _CharT, typename _Traits>
 		friend std::basic_ostream<_CharT, _Traits>&
-		operator<<(basic_ostream<_CharT, _Traits>&, const unlint&);
+		operator<<(std::basic_ostream<_CharT, _Traits>&, const unlint&);
 	};
 
-	/* output unlint with istream */
+	/* output unlint with ostream */
 	template<typename _CharT, typename _Traits>
 	std::basic_ostream<_CharT, _Traits>&
-	operator<<(basic_ostream<_CharT, _Traits>& os, const unlint& uli)
-	{
-		vector<lli>::iterator i=uli.w.end()-1;
-		os << *i;
-		for(--i; i!=uli.w.begin(); --i)
-		{
-			os.width(LEN);
-			os.fill('0');
-			os << *i;
-		}
-	return os;
-	}
+	operator<<(std::basic_ostream<_CharT, _Traits>& os, const unlint& uli);
 
 	/* input unlint with istream */
 	template<typename _CharT, typename _Traits>
 	std::basic_istream<_CharT,_Traits>&
-	operator>>(std::basic_istream<_CharT,_Traits>& is, unlint& uli)
-	{
-		std::string str;
-		is >> str;
-		uli=str;
-	return is;
-	}
+	operator>>(std::basic_istream<_CharT,_Traits>& is, unlint& uli);
 }
 
 using namespace unlimited_int;

@@ -48,19 +48,37 @@ int main()
 		string in, in1, out, spr, test_name;
 		test_name="tests/unlint/"+to_string(q);
 		in+=static_cast<char>(rd()%9+'1');
-		for(int i=rd()%30000; i>=0; --i)
+		for(int i=rd()%10; i>=0; --i)
 		{
 			in+=static_cast<char>(rd()%10+'0');
 		}
 		in1+=static_cast<char>(rd()%9+'1');
-		for(int i=rd()%30000; i>=0; --i)
+		for(int i=rd()%3; i>=0; --i)
 		{
 			in1+=static_cast<char>(rd()%10+'0');
 		}
-		test.open((test_name+".in").c_str(), ios::out);
+		test.open((test_name+".in").c_str(), ios_base::out);
+		test << in << "^" << in1 << endl;
+		test.close();
+		{
+			int ___e=system(("bc < "+test_name+".in > "+test_name+".out").c_str());
+		}
+		test.open((test_name+".in").c_str(), ios_base::out);
 		test << in << endl << in1 << endl;
 		test.close();
-		{int ___e=system(("./cont < "+test_name+".in > "+test_name+".out").c_str());}
+		string outf;
+		test.open((test_name+".out").c_str(), ios_base::in);
+		char z=test.get();
+		while(!test.eof())
+		{
+			if(z!='\\') outf+=z;
+			else z=test.get();
+			z=test.get();
+		}
+		test.close();
+		test.open((test_name+".out").c_str(), ios_base::out);
+		test << outf;
+		test.close();
 		cout << q << ": generated!\n";
 	}
 return 0;

@@ -1,8 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <stack>
 //#include "unlint.h"
-
-#define DEBUG
 
 using namespace std;
 
@@ -38,7 +37,7 @@ public:
 	num& operator*=(const num&);
 	num& operator/=(const num&);
 	num& operator%=(const num&);
-	void nwd(const num&);
+	num& nwd(const num&);
 	num& pow(const num&);
 	bool operator<(const num&) const;
 	bool operator>(const num&) const;
@@ -55,7 +54,6 @@ void /*unlint::*/num::kas0()
 	++i;
 	this->w.erase(i, this->w.end());
 }
-
 
 num& /*unlint::*/num::operator++()
 {
@@ -530,9 +528,7 @@ num& /*unlint*/num::operator%=(const num& _n)
 return *this;
 }
 
-void echo(const num&);
-
-void /*unlint::*/num::nwd(const num& _n)
+num& /*unlint::*/num::nwd(const num& _n)
 {
 	vector<int> a, b, c;
 	this->to_old_type(a);
@@ -547,6 +543,39 @@ void /*unlint::*/num::nwd(const num& _n)
 	vector<int>().swap(b);
 	vector<int>().swap(c);
 	this->from_old_type(a);
+return *this;
+}
+
+num& num::pow(const num& _n)
+{
+	if(_n.w.size()==1 && _n.w[0]==0)
+	{
+		vector<lli>(1,1).swap(this->w);
+		return *this;
+	}
+	vector<lli> k(_n.w);
+	stack<bool> bin;
+	num pow1(*this);
+	while(!(k.size()==1 && k[0]==1))
+	{
+		bin.push(!__builtin_ctz(k[0])); //last bit
+		bool add=false;
+		for(int i=k.size()-1; i>=0; --i)
+		{
+			if(add) k[i]+=BASE;
+			if(!__builtin_ctz(k[i])) add=true; //if(__builtin_ctz(k[i])==0)
+			else add=false;
+			k[i]>>=1;
+		}
+		if(!k[k.size()-1]) k.pop_back(); //if(k[k.size()-1]==0)
+	}
+	while(!bin.empty())
+	{
+		this->operator*=(*this);
+		if(bin.top()) this->operator*=(pow1);
+		bin.pop();
+	}
+return *this;
 }
 
 bool /*unlint::*/num::operator<(const num& _n) const
@@ -597,7 +626,7 @@ void echo(const num& a)
 {
 	int k=a.w.size()-1;
 	cout << a.w[k];
-	for(int i=--k; i>=0; i--)
+	for(int i=--k; i>=0; --i)
 	{
 		cout.width(LEN);
 		cout.fill('0');
@@ -623,161 +652,26 @@ void get(num& a)
 	}
 	a.kas0();
 }
-/*
-class lol
-{
-public:
-	vector<char> w;
-	void get();
-	void echo();
-	void kas0();
-	lol& operator%=(const lol&);
-};
 
-void lol::kas0()
-{
-	vector<char>::iterator i=this->w.end()-1;
-	while(i!=this->w.begin() && *i==0) --i;
-	++i;
-	this->w.erase(i, this->w.end());
-}
-
-void lol::get()
-{
-	string a;
-	cin >> a;
-	w.resize(a.size());
-	vector<char>::iterator wi=this->w.begin();
-	for(int i=a.size()-1; i>=0; --i,++wi)
-		*wi=a[i]-'0';
-}
-
-void lol::echo()
-{
-	for(int i=this->w.size()-1; i>=0; --i)
-		cout << static_cast<char>(this->w[i]+'0');
-}
-
-lol& lol::operator%=(const lol& _n)
-{
-	int nl=_n.w.size(), wl=this->w.size(), iws=wl-nl;
-	vector<char> tab[10];
-	tab[1]=_n.w;
-	for(int i=2; i<10; ++i)
-	{
-		tab[i].resize(nl);
-		char add=0;
-		for(int j=0; j<nl; ++j)
-		{
-			tab[i][j]=i*_n.w[j]+add;
-			add=tab[i][j]/10;
-			tab[i][j]-=10*add;
-		}
-		if(add) tab[i].push_back(add);
-	}
-	bool is_grader;
-	while(iws>=0)
-	{
-		if(wl-iws<nl) is_grader=false;
-		else if(wl-iws>nl) is_grader=true;
-		else
-		{
-			int i=nl-1;
-			while(i>=0 && this->w[i+iws]==_n.w[i])
-				--i;
-			if(i<0 || this->w[i+iws]>_n.w[i]) is_grader=true;
-			else is_grader=false;
-		}
-		if(is_grader)
-		{
-			int down=1, up=9, mean;
-			while(down<up)
-			{
-				mean=1+(down+up)>>1;
-				int kl=tab[mean].size();
-				if(wl-iws<kl) is_grader=true;
-				else if(wl-iws>kl) is_grader=false;
-				else
-				{
-					int i=kl-1;
-					while(i>=0 && this->w[i+iws]==tab[mean][i])
-						--i;
-					if(i<0) is_grader=false;
-					else if(tab[mean][i]>this->w[i+iws]) is_grader=true;
-					else is_grader=false;
-				}
-				if(is_grader) up=--mean;
-				else down=mean;
-			}
-			int gl=tab[up].size();
-			bool add=false;
-			for(int i=0; i<gl; ++i)
-			{
-				this->w[i+iws]-=tab[up][i];
-				if(add) --this->w[i+iws];
-				if(this->w[i+iws]<0)
-				{
-					this->w[i+iws]+=10;
-					add=true;
-				}
-				else add=false;
-			}
-			for(int i=gl+iws; i<wl; ++i)
-			{
-				if(add) --this->w[i];
-				if(this->w[i]<0)
-				{
-					this->w[i]+=10;
-					add=true;
-				}
-				else break;
-			}
-			this->kas0();
-			wl=this->w.size();
-		}
-		--iws;
-	}
-return *this;
-}
-*/
 void wypisz(vector<int> a)
 {
 	int k=a.size()-1;
 	cout << a[k];
-	for(int i=k-1; i>=0; i--)
+	for(int i=k-1; i>=0; --i)
 	{
 		cout.width(9);
 		cout.fill('0');
 		cout << a[i];
 	}
 }
+
 int main()
 {
-#ifdef debug
-	num a, b;
-	get(a);
-	get(b);
-	vector<int> k, l;
-	a.to_old_type(k);
-	b.to_old_type(l);
-	wypisz(k);
-	cout << endl;
-	wypisz(l);
-	cout << endl;
-	mod(k,l);
-	wypisz(k);
-	cout << endl;
-	a.from_old_type(k);
-	echo(a);
-	cout << endl;
-#else
 	num a;
 	num b;
 	get(a);
 	get(b);
-	a/=b;
-	echo(a);
+	echo(a.pow(b));
 	cout << endl;
-#endif
 return 0;
 }

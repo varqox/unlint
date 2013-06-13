@@ -128,7 +128,7 @@ public:
     unlint operator-(unlint b);
     void operator-=(unlint b);
     unlint operator*(unlint b);
-    void operator*=(unlint b);
+    void operator*=(const unlint& b);
     unlint operator/(unlint b);
     void operator/=(unlint b);
     unlint operator%(unlint b);
@@ -739,53 +739,53 @@ inline unlint unlint::operator*(unlint b)
 return b;
 }
 
-inline void unlint::operator*=(unlint b)
+inline void unlint::operator*=(const unlint& _u)
 {
-    if(z==b.z) z=1;
+    if(z==_u.z) z=1;
     else z=0;
-    int al=l.size(), bl=b.l.size(), od=0;
-    long long int g, p;
-    vector<int> w(1), k;
-    for(int i=0; i<bl; i++)
-    {
-        p=0;
-        k.resize(al);
-        for(int j=0; j<al; j++)
-        {
-            g=(long long int)(l[j])*b.l[i]+p;
-            p=g/BASE;
-            k[j]=g-p*BASE;
-        }
-        if(p>0){k.push_back(p);}
-        int o=0, iy=k.size()-1;
-        while(iy>0 && k[iy]==0)
-        {
-            o++;
-            iy--;
-        }
-        k.erase(k.end()-o, k.end());
-        int wl=w.size()-od, kl=k.size(), p=0;
-        if(wl<kl){w.insert(w.end(), kl-wl, 0);wl=w.size()-od;}
-        for(int j=0; j<kl; j++)
-        {
-            w[j+od]+=k[j]+p;
-            if(w[j+od]>=BASE){w[j+od]-=BASE;p=1;}
-            else{p=0;}
-        }
-        for(int j=kl; j<wl; j++)
-        {
-            w[j+od]+=p;
-            if(w[j+od]>=BASE){w[j+od]-=BASE;p=1;}
-            else{p=0;break;}
-        }
-        if(p>0)
-        {
-            w.push_back(p);
-        }
-        od++;
-    }
-    l.swap(w);
-    kas0();
+    int al=l.size(), bl=_u.l.size(), od=0;
+	long long int g, p;
+	vector<int> w(1), k;
+	for(int i=0; i<bl; i++)
+	{
+		p=0;
+		k.resize(al);
+		for(int j=0; j<al; j++)
+		{
+			g=(long long int)(l[j])*_u.l[i]+p;
+			p=g/BASE;
+			k[j]=g-p*BASE;
+		}
+		if(p>0){k.push_back(p);}
+		int o=0, ik=k.size()-1;
+		while(ik>0 && k[ik]==0)
+		{
+			o++;
+			ik--;
+		}
+		k.erase(k.end()-o, k.end());
+		int wl=w.size()-od, kl=k.size(), p=0;
+		if(wl<kl){w.insert(w.end(), kl-wl, 0);wl=w.size()-od;}
+		for(int j=0; j<kl; j++)
+		{
+			w[j+od]+=k[j]+p;
+			if(w[j+od]>=BASE){w[j+od]-=BASE;p=1;}
+			else{p=0;}
+		}
+		for(int j=kl; j<wl; j++)
+		{
+			w[j+od]+=p;
+			if(w[j+od]>=BASE){w[j+od]-=BASE;p=1;}
+			else{p=0;break;}
+		}
+		if(p>0)
+		{
+			w.push_back(p);
+		}
+		od++;
+	}
+	l.swap(w);
+	kas0();
 }
 
 inline unlint unlint::operator/(unlint b)
@@ -1141,49 +1141,7 @@ inline void unlint::pow(unlint b)
         int bins=bin.size();
         for(int ir=bins-1; ir>=0; ir--)
         {
-            int al=l.size(), od=0;
-            long long int g, p;
-            vector<int> w(1), k;
-            for(int i=0; i<al; i++)
-            {
-                p=0;
-                k.resize(al);
-                for(int j=0; j<al; j++)
-                {
-                    g=(long long int)(l[j])*l[i]+p;
-                    p=g/BASE;
-                    k[j]=g-p*BASE;
-                }
-                if(p>0){k.push_back(p);}
-                int o=0, iy=k.size()-1;
-                while(iy>0 && k[i]==0)
-                {
-                    o++;
-                    iy--;
-                }
-                k.erase(k.end()-o, k.end());
-                int wl=w.size()-od, kl=k.size(), p=0;
-                if(wl<kl){w.insert(w.end(), kl-wl, 0);wl=w.size()-od;}
-                for(int j=0; j<kl; j++)
-                {
-                    w[j+od]+=k[j]+p;
-                    if(w[j+od]>=BASE){w[j+od]-=BASE;p=1;}
-                    else{p=0;}
-                }
-                for(int j=kl; j<wl; j++)
-                {
-                    w[j+od]+=p;
-                    if(w[j+od]>=BASE){w[j+od]-=BASE;p=1;}
-                    else{p=0;break;}
-                }
-                if(p>0)
-                {
-                    w.push_back(p);
-                }
-                od++;
-            }
-            l.swap(w);
-            kas0();
+            this->operator*=(*this);
             if(bin[ir]) operator*=(wk);
         }
     }
@@ -1321,7 +1279,7 @@ int main()
 {
 	unlint a, b;
 	cin >> a >> b;
-	a/=b;
+	a.pow(b);
 	cout << a << endl;
 	//cout << nwd(a,b) << endl;
 	/*for(int i=0; i<10; ++i)
