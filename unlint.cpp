@@ -11,7 +11,7 @@ namespace unlimited_int
 	const char LEN=18;
 
 	class unlint::num
-	{ 
+	{
 	public:
 		struct fmod
 		{
