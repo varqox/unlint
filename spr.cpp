@@ -144,9 +144,9 @@ int main(int argc, char **argv)
 		return 0;
 		}
 	#ifdef WIN32
-		cout << "Usage: spr.exe <task name> <exec name>\n";
+		cout << "Usage: spr.exe <task name> <exec name> [test name]\n";
 	#else
-		cout << "Usage: spr <task name> <exec name>\n";
+		cout << "Usage: spr <task name> <exec name> [test name]\n";
 	#endif
 		return 1;
 	}
