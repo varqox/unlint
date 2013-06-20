@@ -132,7 +132,7 @@ int main(int argc, char **argv)
 {
 	if(argc!=3)
 	{
-		if(argc=4)
+		if(argc==4)
 		{
 		#ifndef WIN32
 			task::command="./";
