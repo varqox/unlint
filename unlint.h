@@ -20,18 +20,18 @@ namespace unlimited_int
 		unlint(const char*);
 		unlint(const std::string&);
 		unlint(const unlint&);
-		int size() const;
+		long long int size() const;
 		void swap(unlint&);
 		template<typename type>
-		unlint& operator=(type a);
-		std::string& str() const;
+		unlint& operator=(const type&);
+		std::string str() const;
 		const char* c_str() const;
 		unlint& operator++();
 		unlint& operator--();
-		unlint& operator++(int);
-		unlint& operator--(int);
-		unlint& operator+();
-		unlint& operator-();
+		unlint operator++(int);
+		unlint operator--(int);
+		unlint operator+();
+		unlint operator-();
 		unlint operator+(const unlint&);
 		unlint& operator+=(const unlint&);
 		unlint operator-(const unlint&);
@@ -56,16 +56,33 @@ namespace unlimited_int
 		friend std::basic_ostream<_CharT, _Traits>&
 		operator<<(std::basic_ostream<_CharT, _Traits>&, const unlint&);
 	};
+	
+	template<typename type>
+	inline unlint& unlint::operator=(const type& a)
+	{
+		unlint(a).swap(*this);
+	return *this;
+	}
 
 	/* output unlint with ostream */
 	template<typename _CharT, typename _Traits>
 	std::basic_ostream<_CharT, _Traits>&
-	operator<<(std::basic_ostream<_CharT, _Traits>& os, const unlint& uli);
+	operator<<(std::basic_ostream<_CharT, _Traits>& os, const unlint& uli)
+	{
+		os << uli.c_str();
+	return os;
+	}
 
 	/* input unlint with istream */
 	template<typename _CharT, typename _Traits>
 	std::basic_istream<_CharT,_Traits>&
-	operator>>(std::basic_istream<_CharT,_Traits>& is, unlint& uli);
+	operator>>(std::basic_istream<_CharT,_Traits>& is, unlint& uli)
+	{
+		std::string str;
+		is >> str;
+		uli=str;
+	return is;
+	}
 }
 
 using namespace unlimited_int;

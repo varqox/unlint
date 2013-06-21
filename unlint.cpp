@@ -623,48 +623,305 @@ namespace unlimited_int
 	return !this->operator==(_n);
 	}
 
-	/* output unlint with ostream */
-	template<typename _CharT, typename _Traits>
-	std::basic_ostream<_CharT, _Traits>&
-	operator<<(std::basic_ostream<_CharT, _Traits>& os, const unlint& uli)
+	string to_string(lli a)
 	{
-		std::vector<long long int>::iterator i=uli.w->w.end()-1;
-		os << *i;
-		for(--i; i!=uli.w->w.begin(); --i)
+		stack<char> st;
+		while(a>0)
 		{
-			os.width(LEN);
-			os.fill('0');
-			os << *i;
+			st.push('0'+a%10);
+			a/=10;
 		}
-	return os;
+		string w;
+		while(!st.empty())
+		{
+			w+=st.top();
+			st.pop();
+		}
+		if(w.empty()) w="0";
+	return w;
 	}
+	/*---------------- UNLINT ----------------*/
+	unlint::unlint(): w(new num)
+	{}
 
-	/* input unlint with istream */
-	template<typename _CharT, typename _Traits>
-	std::basic_istream<_CharT,_Traits>&
-	operator>>(std::basic_istream<_CharT,_Traits>& is, unlint& uli)
-	{
-		std::string str;
-		is >> str;
-		uli=str;
-	return is;
-	}
+	unlint::~unlint()
+	{delete w;}
 
-	unlint::unlint(): w(new num){}
-
-	unlint::~unlint(){delete w;}
-
-	unlint::unlint(lli k): z(true)
+	unlint::unlint(lli k): z(true), w(new num)
 	{
 		if(k<0) this->z=false;
 		lli f=k/BASE;
-		if(f>0) w->w.push_back(f);
-		w->w[0]=k-f*BASE;
+		if(f>0) this->w->w.push_back(f);
+		this->w->w[0]=k-f*BASE;
 	}
 
-	unlint::unlint(const char* cstr)
+	unlint::unlint(const char* cstr): z(true), w(new num)
 	{
-		int lenght=strlen(str);
+		int lenght=strlen(cstr), begin=0, idx=0;
+		lli k;
+		if(cstr[0]=='-'){z=false;begin=1;}
+		this->w->w.resize(1+(lenght-begin)/LEN);
+		for(int i=lenght-1; i>=begin; i-=LEN, ++idx)
+		{
+			k=0;
+			for(int j=max(i-LEN+1,begin); j<=i; ++j)
+			{
+				k*=10;
+				k+=cstr[j]-'0';
+			}
+			this->w->w[idx]=k;
+		}
+		this->w->kas0();
+		if(this->w->w.size()==1 && this->w->w[0]==0) this->z=true;
 	}
 
+	unlint::unlint(const string& str): z(true), w(new num)
+	{
+		int lenght=str.size(), begin=0, idx=0;
+		lli k;
+		if(str[0]=='-'){z=false;begin=1;}
+		this->w->w.resize(1+(lenght-begin)/LEN);
+		for(int i=lenght-1; i>=begin; i-=LEN, ++idx)
+		{
+			k=0;
+			for(int j=max(i-LEN+1,begin); j<=i; ++j)
+			{
+				k*=10;
+				k+=str[j]-'0';
+			}
+			this->w->w[idx]=k;
+		}
+		this->w->kas0();
+		if(this->w->w.size()==1 && this->w->w[0]==0) this->z=true;
+	}
+
+	unlint::unlint(const unlint& uli): z(uli.z), w(new num(*uli.w))
+	{}
+
+	lli unlint::size() const
+	{
+		lli w=(this->w->w.size()-1)*LEN, end=this->w->w[this->w->w.size()-1];
+		if(end<1000000000LL)
+		{
+			if(end<10000LL)
+			{
+				if(end<100LL)
+				{
+					if(end<10LL) ++w;
+					else w+=2;
+				}
+				else
+				{
+					if(end<1000LL) w+=3;
+					else w+=4;
+				}
+			}
+			else
+			{
+				if(end<1000000LL)
+				{
+					if(end<100000LL) w+=5;
+					else w+=6;
+				}
+				else
+				{
+					if(end<100000000LL)
+					{
+						if(end<10000000LL) w+=7;
+						else w+=8;
+					}
+					else w+=9;
+				}
+			}
+		}
+		else
+		{
+			if(end<10000000000000LL)
+			{
+				if(end<100000000000LL)
+				{
+					if(end<10000000000LL) w+=10;
+					else w+=11;
+				}
+				else
+				{
+					if(end<1000000000000LL) w+=12;
+					else w+=13;
+				}
+			}
+			else
+			{
+				if(end<1000000000000000LL)
+				{
+					if(end<100000000000000LL) w+=14;
+					else w+=15;
+				}
+				else
+				{
+					if(end<100000000000000000LL)
+					{
+						if(end<10000000000000000LL) w+=16;
+						else w+=17;
+					}
+					else w+=18;
+				}
+			}
+		}
+	return w;
+	}
+
+	void unlint::swap(unlint& uli)
+	{
+		bool k;
+		k=this->z;
+		this->z=uli.z;
+		uli.z=k;
+		this->w->swap(*uli.w);
+	}
+
+	string unlint::str() const
+	{
+		int lenght=this->w->w.size();
+		string str((this->z ? "":"-")+to_string(this->w->w[lenght-1])), k;
+		for(int i=lenght-2; i>=0; --i)
+		{
+			k=to_string(this->w->w[i]);
+			str+=string(LEN-k.size(), '0');
+			str+=k;
+		}
+	return str;
+	}
+
+	const char* unlint::c_str() const
+	{return this->str().c_str();}
+
+	unlint& unlint::operator++()
+	{
+		if(this->z) this->w->operator++();
+		else this->w->operator--();
+		if(this->w->w.size()==1 && this->w->w[0]==0) this->z=true;
+	return *this;
+	}
+
+	unlint& unlint::operator--()
+	{
+		if(this->w->w.size()==1 && this->w->w[0]==0)
+		{
+			this->z=false;
+			this->w->w[0]=1;
+		}
+		else if(this->z) this->w->operator--();
+		else this->w->operator++();
+	return *this;
+	}
+
+	unlint unlint::operator++(int)
+	{
+		unlint k(*this);
+		if(this->z) this->w->operator++();
+		else this->w->operator--();
+		if(this->w->w.size()==1 && this->w->w[0]==0) this->z=true;
+	return k;
+	}
+
+	unlint unlint::operator--(int)
+	{
+		unlint k(*this);
+		if(this->w->w.size()==1 && this->w->w[0]==0)
+		{
+			this->z=false;
+			this->w->w[0]=1;
+		}
+		else if(this->z) this->w->operator--();
+		else this->w->operator++();
+	return k;
+	}
+
+	unlint unlint::operator+()
+	{return unlint(*this);}
+
+	unlint unlint::operator-()
+	{
+		unlint k(*this);
+		k.z=!k.z;
+	return k;
+	}
+
+	unlint unlint::operator+(const unlint& _n)
+	{
+		unlint emp(_n), k(*this);
+		if(k.z==emp.z) k.w->operator+=(*emp.w);
+		else
+		{
+			if(k.w->operator>(*emp.w))
+				k.w->operator-=(*emp.w);
+			else
+			{
+				emp.w->operator-=(*k.w);
+				k.w->swap(*emp.w);
+				if(k.w->w.size()==1 && k.w->w[0]==0) k.z=true;
+				else k.z=!k.z;
+			}
+		}
+	return k;
+	}
+
+	unlint& unlint::operator+=(const unlint& _n)
+	{
+		unlint emp(_n);
+		if(this->z==emp.z) this->w->operator+=(*emp.w);
+		else
+		{
+			if(this->w->operator>(*emp.w))
+				this->w->operator-=(*emp.w);
+			else
+			{
+				emp.w->operator-=(*this->w);
+				this->w->swap(*emp.w);
+				if(this->w->w.size()==1 && this->w->w[0]==0) this->z=true;
+				else this->z=!this->z;
+			}
+		}
+	return *this;
+	}
+
+	unlint unlint::operator-(const unlint& _n)
+	{
+		unlint emp(_n), k(*this);
+		emp.z=!emp.z;
+		if(k.z==emp.z) k.w->operator+=(*emp.w);
+		else
+		{
+			if(k.w->operator>(*emp.w))
+				k.w->operator-=(*emp.w);
+			else
+			{
+				emp.w->operator-=(*k.w);
+				k.w->swap(*emp.w);
+				if(k.w->w.size()==1 && k.w->w[0]==0) k.z=true;
+				else k.z=!k.z;
+			}
+		}
+	return k;
+	}
+
+	unlint& unlint::operator-=(const unlint& _n)
+	{
+		unlint emp(_n);
+		emp.z=!emp.z;
+		if(this->z==emp.z) this->w->operator+=(*emp.w);
+		else
+		{
+			if(this->w->operator>(*emp.w))
+				this->w->operator-=(*emp.w);
+			else
+			{
+				emp.w->operator-=(*this->w);
+				this->w->swap(*emp.w);
+				if(this->w->w.size()==1 && this->w->w[0]==0) this->z=true;
+				else this->z=!this->z;
+			}
+		}
+	return *this;
+	}
 }

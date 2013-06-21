@@ -1,18 +1,14 @@
-#include "unlint.cpp"
+#include "unlint.h"
 #include <iostream>
 
-class lol
-{
-	int h;
-public:
-	lol(long long int k): h(k){}
-};
+using namespace std;
 
 int main()
 {
-	lol(1);
 	unlint a, b;
-	cin >> a;
+	cin >> a >> b;
+	cout << "-----------\n" << a-b << endl;
+	a-=b;
 	cout << a << endl;
 return 0;
 }
