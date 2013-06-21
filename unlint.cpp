@@ -924,4 +924,53 @@ namespace unlimited_int
 		}
 	return *this;
 	}
+
+	unlint unlint::operator*(const unlint& _n)
+	{
+		unlint k(*this);
+		if(k.z==_n.z) k.z=true;
+		else k.z=false;
+		k.w->operator*=(*_n.w);
+	return k;
+	}
+
+	unlint& unlint::operator*=(const unlint& _n)
+	{
+		if(this->z==_n.z) this->z=true;
+		else this->z=false;
+		this->w->operator*=(*_n.w);
+	return *this;
+	}
+
+	unlint unlint::operator/(const unlint& _n)
+	{
+		unlint k(*this);
+		if(k.z==_n.z) k.z=true;
+		else k.z=false;
+		k.w->operator/=(*_n.w);
+	return k;
+	}
+
+	unlint& unlint::operator/=(const unlint& _n)
+	{
+		if(this->z==_n.z) this->z=true;
+		else this->z=false;
+		this->w->operator/=(*_n.w);
+	return *this;
+	}
+
+	unlint unlint::operator%(const unlint& _n)
+	{
+		unlint k(*this);
+		k.w->operator%=(*_n.w);
+		//if(!k.z && !(k.w->w.size()==1 && k.w->w[0]==0)) k+=(_n<0LL ? -_n:_n);
+	return k;
+	}
+
+	unlint& unlint::operator%=(const unlint& _n)
+	{
+		this->w->operator%=(*_n.w);
+		//if(!this->z && !(this->w->w.size()==1 && this->w->w[0]==0)) this->operator+=(_n<0LL ? -_n:_n);
+	return *this;
+	}
 }
