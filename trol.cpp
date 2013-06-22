@@ -6,9 +6,12 @@ using namespace std;
 int main()
 {
 	unlint a, b;
-	cin >> a >> b;
-	cout << "-----------\n" << a%b << endl;
-	a%=b;
-	cout << a << endl;
+    cin >> a >> b;
+    if(a<b) cout << a << "<" << b  << endl;
+    if(a>b) cout << a << ">" << b  << endl;
+    if(a==b) cout << a << "==" << b  << endl;
+    if(a!=b) cout << a << "!=" << b  << endl;
+    if(a<=b) cout << a << "<=" << b  << endl;
+    if(a>=b) cout << a << ">=" << b  << endl;
 return 0;
 }

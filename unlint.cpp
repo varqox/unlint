@@ -973,4 +973,45 @@ namespace unlimited_int
 		//if(!this->z && !(this->w->w.size()==1 && this->w->w[0]==0)) this->operator+=(_n<0LL ? -_n:_n);
 	return *this;
 	}
+
+	bool unlint::operator>(const unlint& _n) const
+	{
+		if(this->z!=_n.z) return this->z;
+		if(this->z) return this->w->operator>(*_n.w);
+	return this->w->operator<(*_n.w);
+	}
+
+	bool unlint::operator<(const unlint& _n) const
+	{
+		if(this->z!=_n.z) return _n.z;
+		if(this->z) return this->w->operator<(*_n.w);
+	return this->w->operator>(*_n.w);
+	}
+
+	bool unlint::operator>=(const unlint& _n) const
+	{
+		
+		if(this->z!=_n.z) return this->z;
+		if(this->z) return this->w->operator>=(*_n.w);
+	return this->w->operator<=(*_n.w);
+	}
+
+	bool unlint::operator<=(const unlint& _n) const
+	{
+		if(this->z!=_n.z) return _n.z;
+		if(this->z) return this->w->operator<=(*_n.w);
+	return this->w->operator>=(*_n.w);
+	}
+
+	bool unlint::operator==(const unlint& _n) const
+	{
+		if(this->z==_n.z && this->w->operator==(*_n.w)) return true;
+	return false;
+	}
+
+	bool unlint::operator!=(const unlint& _n) const
+	{
+		if(this->z==_n.z && this->w->operator==(*_n.w)) return false;
+	return true;
+	}
 }
