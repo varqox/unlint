@@ -101,16 +101,16 @@ num& /*unlint::*/num::operator+=(const num& _n)
 	}
 	if(add)
 	{
-		if(i==s) this->w.push_back(add);
+		if(i==this->w.size()) this->w.push_back(add);
 		else
 		{
-			for(;i<s; ++i)
+			for(;i<this->w.size(); ++i)
 			{
 				++this->w[i];
 				if(this->w[i]<BASE) break;
 				this->w[i]-=BASE;
 			}
-			if(i==s) this->w.push_back(add);
+			if(i==this->w.size()) this->w.push_back(add);
 		}
 	}
 return *this;
@@ -671,7 +671,7 @@ int main()
 	num b;
 	get(a);
 	get(b);
-	echo(a.pow(b));
+	echo(a+=b);
 	cout << endl;
 return 0;
 }

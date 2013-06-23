@@ -1279,10 +1279,7 @@ int main()
 {
 	unlint a, b;
 	cin >> a >> b;
-	a.pow(b);
+    a+=b;
 	cout << a << endl;
-	//cout << nwd(a,b) << endl;
-	/*for(int i=0; i<10; ++i)
-		a*=b;*/
 return 0;
 }

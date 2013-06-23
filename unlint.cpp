@@ -1,6 +1,7 @@
 #include <cstring>
 #include <stack>
 #include "unlint.h"
+#include <iostream>
 
 using namespace std;
 
@@ -102,16 +103,16 @@ namespace unlimited_int
 		}
 		if(add)
 		{
-			if(i==s) this->w.push_back(add);
+			if(i==this->w.size()) this->w.push_back(add);
 			else
 			{
-				for(;i<s; ++i)
+				for(;i<this->w.size(); ++i)
 				{
 					++this->w[i];
 					if(this->w[i]<BASE) break;
 					this->w[i]-=BASE;
 				}
-				if(i==s) this->w.push_back(add);
+				if(i==this->w.size()) this->w.push_back(add);
 			}
 		}
 	return *this;
@@ -793,7 +794,15 @@ namespace unlimited_int
 	}
 
 	const char* unlint::c_str() const
-	{return this->str().c_str();}
+	{
+		string w=this->str();
+		int wl=w.size();
+		char *t=new char[wl+1];
+		t[wl]='\0';
+		for(int i=0; i<wl; ++i)
+			t[i]=w[i];
+	return t;
+	}
 
 	unlint& unlint::operator++()
 	{
@@ -837,28 +846,19 @@ namespace unlimited_int
 	return k;
 	}
 
-	unlint unlint::operator+()
-	{return unlint(*this);}
-
-	unlint unlint::operator-()
-	{
-		unlint k(*this);
-		k.z=!k.z;
-	return k;
-	}
-
 	unlint unlint::operator+(const unlint& _n)
 	{
-		unlint emp(_n), k(*this);
-		if(k.z==emp.z) k.w->operator+=(*emp.w);
+		unlint k(*this);
+		if(k.z==_n.z) k.w->operator+=(*_n.w);
 		else
 		{
-			if(k.w->operator>(*emp.w))
-				k.w->operator-=(*emp.w);
+			if(k.w->operator>(*_n.w))
+				k.w->operator-=(*_n.w);
 			else
 			{
-				emp.w->operator-=(*k.w);
-				k.w->swap(*emp.w);
+				num emp(*_n.w);
+				emp-=*k.w;
+				k.w->swap(emp);
 				if(k.w->w.size()==1 && k.w->w[0]==0) k.z=true;
 				else k.z=!k.z;
 			}
@@ -868,16 +868,16 @@ namespace unlimited_int
 
 	unlint& unlint::operator+=(const unlint& _n)
 	{
-		unlint emp(_n);
-		if(this->z==emp.z) this->w->operator+=(*emp.w);
+		if(this->z==_n.z) this->w->operator+=(*_n.w);
 		else
 		{
-			if(this->w->operator>(*emp.w))
-				this->w->operator-=(*emp.w);
+			if(this->w->operator>(*_n.w))
+				this->w->operator-=(*_n.w);
 			else
 			{
-				emp.w->operator-=(*this->w);
-				this->w->swap(*emp.w);
+				num emp(*_n.w);
+				emp-=*this->w;
+				this->w->swap(emp);
 				if(this->w->w.size()==1 && this->w->w[0]==0) this->z=true;
 				else this->z=!this->z;
 			}
@@ -887,17 +887,17 @@ namespace unlimited_int
 
 	unlint unlint::operator-(const unlint& _n)
 	{
-		unlint emp(_n), k(*this);
-		emp.z=!emp.z;
-		if(k.z==emp.z) k.w->operator+=(*emp.w);
+		unlint k(*this);
+		if(k.z!=_n.z) k.w->operator+=(*_n.w);
 		else
 		{
-			if(k.w->operator>(*emp.w))
-				k.w->operator-=(*emp.w);
+			if(k.w->operator>(*_n.w))
+				k.w->operator-=(*_n.w);
 			else
 			{
-				emp.w->operator-=(*k.w);
-				k.w->swap(*emp.w);
+				num emp(*_n.w);
+				emp-=*k.w;
+				k.w->swap(emp);
 				if(k.w->w.size()==1 && k.w->w[0]==0) k.z=true;
 				else k.z=!k.z;
 			}
@@ -907,17 +907,16 @@ namespace unlimited_int
 
 	unlint& unlint::operator-=(const unlint& _n)
 	{
-		unlint emp(_n);
-		emp.z=!emp.z;
-		if(this->z==emp.z) this->w->operator+=(*emp.w);
+		if(this->z!=_n.z) this->w->operator+=(*_n.w);
 		else
 		{
-			if(this->w->operator>(*emp.w))
-				this->w->operator-=(*emp.w);
+			if(this->w->operator>(*_n.w))
+				this->w->operator-=(*_n.w);
 			else
 			{
-				emp.w->operator-=(*this->w);
-				this->w->swap(*emp.w);
+				num emp(*_n.w);
+				emp-=*this->w;
+				this->w->swap(emp);
 				if(this->w->w.size()==1 && this->w->w[0]==0) this->z=true;
 				else this->z=!this->z;
 			}
@@ -931,6 +930,7 @@ namespace unlimited_int
 		if(k.z==_n.z) k.z=true;
 		else k.z=false;
 		k.w->operator*=(*_n.w);
+		if(*k.w==0) k.z=true;
 	return k;
 	}
 
@@ -939,6 +939,7 @@ namespace unlimited_int
 		if(this->z==_n.z) this->z=true;
 		else this->z=false;
 		this->w->operator*=(*_n.w);
+		if(*this->w==0) this->z=true;
 	return *this;
 	}
 
@@ -948,6 +949,7 @@ namespace unlimited_int
 		if(k.z==_n.z) k.z=true;
 		else k.z=false;
 		k.w->operator/=(*_n.w);
+		if(*k.w==0) k.z=true;
 	return k;
 	}
 
@@ -956,6 +958,7 @@ namespace unlimited_int
 		if(this->z==_n.z) this->z=true;
 		else this->z=false;
 		this->w->operator/=(*_n.w);
+		if(*this->w==0) this->z=true;
 	return *this;
 	}
 
@@ -1013,5 +1016,97 @@ namespace unlimited_int
 	{
 		if(this->z==_n.z && this->w->operator==(*_n.w)) return false;
 	return true;
+	}
+
+	unlint& unlint::pow(const unlint& _n)
+	{
+		if(_n.w->w.size()==1 && _n.w->w[0]==0)
+		{
+			this->z=true;
+			vector<lli>(1,1).swap(this->w->w);
+			return *this;
+		}
+		else if(this->w->w.size()==1 && this->w->w[0]==1)
+		{
+			if(!this->z && __builtin_ctz(_n.w->w[0])) this->z=true;
+			return *this;
+		}
+		if(!this->z && __builtin_ctz(_n.w->w[0])) this->z=true;
+		if(!_n.z)
+		{
+			this->z=true;
+			vector<lli>(1,0).swap(this->w->w);
+		}
+		else this->w->pow(*_n.w);
+	return *this;
+	}
+
+	unlint& unlint::factorial()
+	{
+		num mx(1), i(2);
+		this->w->swap(mx);
+		while(i<=mx)
+		{
+			this->w->operator*=(i);
+			++i;
+		}
+		this->z=true;
+	return *this;
+	}
+
+	unlint operator+(const unlint& a)
+	{return a;}
+
+	unlint operator-(const unlint& a)
+	{
+		unlint k(a);
+		k.z=!k.z;
+	return k;
+	}
+
+	unlint nwd(const unlint& a, const unlint& b)
+	{
+		unlint w(a);
+		w.w->nwd(*b.w);
+		w.z=true;
+	return w;
+	}
+
+	unlint pow(const unlint& a, const unlint& b)
+	{
+		unlint w(a);
+		w.pow(b);
+	return w;
+	}
+
+	unlint factorial(const unlint& a)
+	{
+		unlint w(a);
+		w.factorial();
+	return w;
+	}
+
+	/* output unlint with ostream */
+	std::ostream& operator<<(std::ostream& os, const unlint& uli)
+	{
+		int ul=uli.w->w.size();
+		if(!uli.z) os << '-';
+		os << uli.w->w[--ul];
+		for(int i=--ul; i>=0; --i)
+		{
+			os.width(LEN);
+			os.fill('0');
+			os << uli.w->w[i];
+		}
+	return os;
+	}
+
+	/* input unlint with istream */
+	std::istream& operator>>(std::istream& is, unlint& uli)
+	{
+		std::string str;
+		is >> str;
+		uli=str;
+	return is;
 	}
 }

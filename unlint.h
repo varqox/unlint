@@ -13,6 +13,8 @@ namespace unlimited_int
 		class num;
 		bool z; // znak
 		num* w; // wartość
+		template<typename _CharT, typename _Traits>
+		std::basic_ostream<_CharT, _Traits>& out(std::basic_ostream<_CharT, _Traits>&) const;
 	public:
 		unlint();
 		~unlint();
@@ -30,8 +32,8 @@ namespace unlimited_int
 		unlint& operator--();
 		unlint operator++(int);
 		unlint operator--(int);
-		unlint operator+();
-		unlint operator-();
+		friend unlint operator+(const unlint&);
+		friend unlint operator-(const unlint&);
 		unlint operator+(const unlint&);
 		unlint& operator+=(const unlint&);
 		unlint operator-(const unlint&);
@@ -50,38 +52,21 @@ namespace unlimited_int
 		bool operator!=(const unlint&) const;
 		unlint& pow(const unlint&);
 		unlint& factorial();
-		friend unlint& nwd(const unlint&, const unlint&);
+		friend unlint nwd(const unlint&, const unlint&);
 		/* output unlint with ostream */
-		template<typename _CharT, typename _Traits>
-		friend std::basic_ostream<_CharT, _Traits>&
-		operator<<(std::basic_ostream<_CharT, _Traits>&, const unlint&);
+		friend std::ostream& operator<<(std::ostream&, const unlint&);
+		/* input unlint with istream */
+		friend std::istream& operator>>(std::istream&, unlint&);
 	};
-	
+
+	unlint pow(const unlint&, const unlint&);
+	unlint factorial(const unlint&);
+
 	template<typename type>
 	inline unlint& unlint::operator=(const type& a)
 	{
 		unlint(a).swap(*this);
 	return *this;
-	}
-
-	/* output unlint with ostream */
-	template<typename _CharT, typename _Traits>
-	std::basic_ostream<_CharT, _Traits>&
-	operator<<(std::basic_ostream<_CharT, _Traits>& os, const unlint& uli)
-	{
-		os << uli.c_str();
-	return os;
-	}
-
-	/* input unlint with istream */
-	template<typename _CharT, typename _Traits>
-	std::basic_istream<_CharT,_Traits>&
-	operator>>(std::basic_istream<_CharT,_Traits>& is, unlint& uli)
-	{
-		std::string str;
-		is >> str;
-		uli=str;
-	return is;
 	}
 }
 
