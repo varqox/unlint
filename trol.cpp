@@ -6,7 +6,7 @@ using namespace std;
 int main()
 {
 	unlint a, b;
-    cin >> a >> b;
-	cout << (a+=b) << endl;
+    cin >> a;// >> b;
+	//cout << (a+=b) << endl;
 return 0;
 }
