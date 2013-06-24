@@ -5,8 +5,10 @@ using namespace std;
 
 int main()
 {
-	unlint a, b;
-    cin >> a;// >> b;
-	//cout << (a+=b) << endl;
+	unlint a, c, b;
+    cin >> a >> b;
+    for(int i=0; i<1000; ++i)
+    	a=a-b;
+    cout << a << endl;
 return 0;
 }

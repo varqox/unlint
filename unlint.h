@@ -18,14 +18,15 @@ namespace unlimited_int
 	public:
 		unlint();
 		~unlint();
-		unlint(long long int);
+		unlint(const long long int&);
 		unlint(const char*);
 		unlint(const std::string&);
 		unlint(const unlint&);
-		long long int size() const;
-		void swap(unlint&);
+		unlint& operator=(const unlint&);
 		template<typename type>
 		unlint& operator=(const type&);
+		long long int size() const;
+		void swap(unlint&);
 		std::string str() const;
 		const char* c_str() const;
 		unlint& operator++();
@@ -63,9 +64,9 @@ namespace unlimited_int
 	unlint factorial(const unlint&);
 
 	template<typename type>
-	inline unlint& unlint::operator=(const type& a)
+	unlint& unlint::operator=(const type& _n)
 	{
-		unlint(a).swap(*this);
+		unlint(_n).swap(*this);
 	return *this;
 	}
 }

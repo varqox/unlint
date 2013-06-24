@@ -642,13 +642,14 @@ namespace unlimited_int
 	return w;
 	}
 	/*---------------- UNLINT ----------------*/
+
 	unlint::unlint(): w(new num)
 	{}
 
 	unlint::~unlint()
 	{delete w;}
 
-	unlint::unlint(lli k): z(true), w(new num)
+	unlint::unlint(const lli& k): z(true), w(new num)
 	{
 		if(k<0) this->z=false;
 		lli f=k/BASE;
@@ -698,6 +699,12 @@ namespace unlimited_int
 
 	unlint::unlint(const unlint& uli): z(uli.z), w(new num(*uli.w))
 	{}
+
+	unlint& unlint::operator=(const unlint& a)
+	{
+		unlint(a).swap(*this);
+	return *this;
+	}
 
 	lli unlint::size() const
 	{

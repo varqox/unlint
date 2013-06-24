@@ -1278,8 +1278,9 @@ return w;
 int main()
 {
 	unlint a, b;
-	cin >> a >> b;
-    a+=b;
-	cout << a << endl;
+    cin >> a >> b;
+    for(int i=0; i<1000; ++i)
+        a=a-b;
+    cout << a << endl;
 return 0;
 }
