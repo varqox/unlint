@@ -42,11 +42,11 @@ int main()
 	int t;
 	cin >> t;
 	fstream test;
-	{int ___e=system("g++ cont.cpp -s -O3 -D_21 -o cont && mkdir -p tests/21/ && rm -f tests/21/*");}
+	{int ___e=system("mkdir -p tests/unlint/ && rm -f tests/unlint/*");}
 	for(int q=1; q<=t; ++q)
 	{
 		string in, in1, out, spr, test_name;
-		test_name="tests/21/"+to_string(q);
+		test_name="tests/unlint/"+to_string(q);
 		for(int i=rd()%4; i>=0; --i)
 		{
 			in+=static_cast<char>(rd()%10+'0');
