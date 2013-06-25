@@ -7,5 +7,3 @@ Version: 2.0
 
 Header file: unlint.h
 Body: unlint.cpp
-
-Rest of files are used to testing
