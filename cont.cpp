@@ -1279,8 +1279,49 @@ int main()
 {
 	unlint a, b;
     cin >> a >> b;
-    for(int i=0; i<1000; ++i)
-        a=a-b;
-    cout << a << endl;
+#ifdef _1
+    cout << a-1;
+#elif _2
+    cout << a;
+#elif _3
+    cout << a+1;
+#elif _4
+    cout << a;
+#elif _5
+    cout << -a;
+#elif _6
+    cout << +a;
+#elif _7
+    cout << a+b;
+#elif _8
+    a+=b;cout << a;
+#elif _9
+    cout << a-b;
+#elif _10
+    a-=b;cout << a;
+#elif _11
+    cout << a*b;
+#elif _12
+    a*=b;cout << a;
+#elif _13
+    cout << a/b;
+#elif _14
+    a/=b;cout << a;
+#elif _15
+    cout << a%b;
+#elif _16
+    a%=b;cout << a;
+#elif _17
+    cout << nwd(a,b);
+#elif _18
+    cout << pow(a,b);
+#elif _19
+    cout << pow(a,b);
+#elif _20
+    cout << factorial(a);
+#elif _21
+    cout << factorial(a);
+#endif
+    cout << endl;
 return 0;
 }

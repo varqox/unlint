@@ -247,9 +247,7 @@ namespace unlimited_int
 		b.gen_mod(t);
 		for(int q=0; q<this->w.size(); ++q)
 		{
-			_n.mult(w[q], t);
-			//k.w.insert(k.w.begin(),i,0);
-			//lol+=k;
+			_n.mult(w[q], t);//k.w.insert(k.w.begin(),i,0);//lol+=k;
 			int s=_n.w.size(), i=0;
 			if(s+q>lol.w.size()) lol.w.resize(s+q);
 			bool add=false;
@@ -789,26 +787,23 @@ namespace unlimited_int
 
 	string unlint::str() const
 	{
+		lli k;
 		int lenght=this->w->w.size();
-		string str((this->z ? "":"-")+to_string(this->w->w[lenght-1])), k;
-		for(int i=lenght-2; i>=0; --i)
+		bool begin=this->z ? false:true;
+		string str(this->size()+begin, '0');
+		if(begin) str[0]='-';
+		for(int idx=0, j, i=str.size()-1; i>=begin; i-=LEN, ++idx)
 		{
-			k=to_string(this->w->w[i]);
-			str+=string(LEN-k.size(), '0');
-			str+=k;
+			j=i;
+			k=this->w->w[idx];
+			while(k>0)
+			{
+				str[j]+=k%10;
+				k/=10;
+				--j;
+			}
 		}
 	return str;
-	}
-
-	const char* unlint::c_str() const
-	{
-		string w=this->str();
-		int wl=w.size();
-		char *t=new char[wl+1];
-		t[wl]='\0';
-		for(int i=0; i<wl; ++i)
-			t[i]=w[i];
-	return t;
 	}
 
 	unlint& unlint::operator++()
@@ -973,14 +968,14 @@ namespace unlimited_int
 	{
 		unlint k(*this);
 		k.w->operator%=(*_n.w);
-		//if(!k.z && !(k.w->w.size()==1 && k.w->w[0]==0)) k+=(_n<0LL ? -_n:_n);
+		if(!k.z && !(k.w->w.size()==1 && k.w->w[0]==0)) k+=(_n<0LL ? -_n:_n);
 	return k;
 	}
 
 	unlint& unlint::operator%=(const unlint& _n)
 	{
 		this->w->operator%=(*_n.w);
-		//if(!this->z && !(this->w->w.size()==1 && this->w->w[0]==0)) this->operator+=(_n<0LL ? -_n:_n);
+		if(!this->z && !(this->w->w.size()==1 && this->w->w[0]==0)) this->operator+=(_n<0LL ? -_n:_n);
 	return *this;
 	}
 
@@ -1050,8 +1045,8 @@ namespace unlimited_int
 
 	unlint& unlint::factorial()
 	{
-		num mx(1), i(2);
-		this->w->swap(mx);
+		lli mx=this->w->w[0], i=2;
+		vector<lli>(1,1).swap(this->w->w);
 		while(i<=mx)
 		{
 			this->w->operator*=(i);
@@ -1062,7 +1057,7 @@ namespace unlimited_int
 	}
 
 	unlint operator+(const unlint& a)
-	{return a;}
+	{return unlint(a);}
 
 	unlint operator-(const unlint& a)
 	{

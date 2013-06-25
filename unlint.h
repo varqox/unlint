@@ -28,7 +28,6 @@ namespace unlimited_int
 		long long int size() const;
 		void swap(unlint&);
 		std::string str() const;
-		const char* c_str() const;
 		unlint& operator++();
 		unlint& operator--();
 		unlint operator++(int);
