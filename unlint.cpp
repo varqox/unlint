@@ -1045,8 +1045,8 @@ namespace unlimited_int
 
 	unlint& unlint::factorial()
 	{
-		lli mx=this->w->w[0], i=2;
-		vector<lli>(1,1).swap(this->w->w);
+		num mx(1), i(2);
+		this->w->swap(mx);
 		while(i<=mx)
 		{
 			this->w->operator*=(i);
