@@ -2,15 +2,15 @@ cpp=g++
 targ=test
 objects=test.o #unlint.o
 flags=-s -O3
-headers=unlint.h
+headers=../unlint.h
 
 all: $(targ) gen cont spr trol
 
 $(targ): $(objects)
 	$(cpp) $(objects) $(flags) -o $(targ)
 
-unlint.o: unlint.cpp
-	$(cpp) unlint.cpp -c $(flags) -o unlint.o
+unlint.o: ../unlint.cpp
+	$(cpp) ../unlint.cpp -c $(flags) -o unlint.o
 
 trol: trol.o unlint.o $(headers)
 	$(cpp) unlint.o trol.o $(flags) -o trol
