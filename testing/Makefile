@@ -2,7 +2,7 @@ cpp=g++
 targ=test
 objects=test.o #unlint.o
 flags=-s -O3
-headers=../unlint.h
+headers=../unlint.hpp
 
 all: $(targ) gen cont spr trol
 
