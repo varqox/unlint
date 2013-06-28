@@ -13,8 +13,6 @@ namespace unlimited_int
 		class num;
 		bool z; // znak
 		num* w; // wartość
-		template<typename _CharT, typename _Traits>
-		std::basic_ostream<_CharT, _Traits>& out(std::basic_ostream<_CharT, _Traits>&) const;
 	public:
 		unlint();
 		~unlint();
