@@ -7,9 +7,15 @@
 
 namespace unlimited_int
 {
+	/*
+	unlimited integer type
+	*/
 	class unlint
 	{
 	private:
+		/*
+		unlimited natural type
+		*/
 		class num;
 		bool z; // znak
 		num* w; // wartość
