@@ -87,7 +87,7 @@ namespace unlimited_int
 
 	unlint::num& unlint::num::operator+=(const num& _n)
 	{
-		int s=_n.w.size(), i=0;
+		unsigned int s=_n.w.size(), i=0;
 		if(s>this->w.size()) this->w.resize(s);
 		bool add=false;
 		for(; i<s; ++i)
@@ -242,13 +242,12 @@ namespace unlimited_int
 	unlint::num& unlint::num::operator*=(const num& b)
 	{
 		num lol=0, _n;
-		lli bl=b.w.size();
 		vector<num::fmod> t;
 		b.gen_mod(t);
-		for(int q=0; q<this->w.size(); ++q)
+		for(unsigned int q=0; q<this->w.size(); ++q)
 		{
 			_n.mult(w[q], t);//k.w.insert(k.w.begin(),i,0);//lol+=k;
-			int s=_n.w.size(), i=0;
+			unsigned int s=_n.w.size(), i=0;
 			if(s+q>lol.w.size()) lol.w.resize(s+q);
 			bool add=false;
 			for(; i<s; ++i)
@@ -324,7 +323,7 @@ namespace unlimited_int
 				int down=1, up=BS2-1, mean;
 				while(down<up)
 				{
-					mean=1+(down+up)>>1;
+					mean=1+((down+up)>>1);
 					//g=b*mean;
 					{
 						g.resize(bl);
@@ -438,7 +437,7 @@ namespace unlimited_int
 				int down=1, up=BS2-1, mean;
 				while(down<up)
 				{
-					mean=1+(down+up)>>1;
+					mean=1+((down+up)>>1);
 					//g=b*mean;
 					{
 						g.resize(bl);
@@ -581,8 +580,8 @@ namespace unlimited_int
 	bool unlint::num::operator<(const num& _n) const
 	{
 		int i=this->w.size();
-		if(i<_n.w.size()) return true;
-		else if(i>_n.w.size()) return false;
+		if(static_cast<unsigned int>(i)<_n.w.size()) return true;
+		else if(static_cast<unsigned int>(i)>_n.w.size()) return false;
 		--i;
 		while(i>=0 && this->w[i]==_n.w[i])
 			--i;
@@ -609,7 +608,7 @@ namespace unlimited_int
 	bool unlint::num::operator==(const num& _n) const
 	{
 		int i=this->w.size();
-		if(i!=_n.w.size()) return false;
+		if(static_cast<unsigned int>(i)!=_n.w.size()) return false;
 		--i;
 		while(i>=0 && this->w[i]==_n.w[i])
 			--i;
@@ -788,7 +787,6 @@ namespace unlimited_int
 	string unlint::str() const
 	{
 		lli k;
-		int lenght=this->w->w.size();
 		bool begin=this->z ? false:true;
 		string str(this->size()+begin, '0');
 		if(begin) str[0]='-';
