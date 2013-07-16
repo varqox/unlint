@@ -1043,13 +1043,20 @@ namespace unlimited_int
 
 	unlint& unlint::factorial()
 	{
-		num mx(1), i(2);
+		num mx(1), i(2), trol(1);
 		this->w->swap(mx);
 		while(i<=mx)
 		{
-			this->w->operator*=(i);
+			if(trol.w.size()<30)
+				trol*=i;
+			else
+			{
+				this->w->operator*=(trol);
+				trol=i;
+			}
 			++i;
 		}
+		this->w->operator*=(trol);
 		this->z=true;
 	return *this;
 	}
