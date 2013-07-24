@@ -320,7 +320,9 @@ namespace unlimited_int
 			}
 			if(is_grader)
 			{
-				int down=1, up=BS2-1, mean;
+				lli inter1=a[bl+iws-1], inter2=b[bl-1];
+				if(al-iws>bl) inter1+=static_cast<lli>(BS2)*a[bl+iws];
+				int down=std::max(1LL,inter1/(inter2+1)), up=std::min(BS2-1,(inter1+1)/inter2), mean;
 				while(down<up)
 				{
 					mean=1+((down+up)>>1);
@@ -434,7 +436,9 @@ namespace unlimited_int
 			}
 			if(is_grader)
 			{
-				int down=1, up=BS2-1, mean;
+				lli inter1=a[bl+iws-1], inter2=b[bl-1];
+				if(al-iws>bl) inter1+=static_cast<lli>(BS2)*a[bl+iws];
+				int down=std::max(1LL,inter1/(inter2+1)), up=std::min(BS2-1,(inter1+1)/inter2), mean;
 				while(down<up)
 				{
 					mean=1+((down+up)>>1);
@@ -646,9 +650,13 @@ namespace unlimited_int
 	unlint::~unlint()
 	{delete w;}
 
-	unlint::unlint(const lli& k): z(true), w(new num)
+	unlint::unlint(lli k): z(true), w(new num)
 	{
-		if(k<0) this->z=false;
+		if(k<0)
+		{
+			this->z=false;
+			k=-k;
+		}
 		lli f=k/BASE;
 		if(f>0) this->w->w.push_back(f);
 		this->w->w[0]=k-f*BASE;

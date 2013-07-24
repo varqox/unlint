@@ -47,18 +47,20 @@ int main()
 	{
 		string in, in1, out, spr, test_name;
 		test_name="tests/unlint/"+to_string(q);
-		for(int i=rd()%4; i>=0; --i)
+		in+=static_cast<char>(rd()%9+'1');
+		for(int i=rd()%10000; i>=0; --i)
 		{
 			in+=static_cast<char>(rd()%10+'0');
 		}
-		for(int i=rd()%4; i>=0; --i)
+		in1+=static_cast<char>(rd()%9+'1');
+		for(int i=rd()%10000; i>=0; --i)
 		{
 			in1+=static_cast<char>(rd()%10+'0');
 		}
 		test.open((test_name+".in").c_str(), ios_base::out);
 		test << (rd()%2 ? "-":"") << in << " " << (rd()%2 ? "-":"") << in1 << endl;
 		test.close();
-		int ___e=system(("./cont < "+test_name+".in > "+test_name+".out").c_str());
+		int ___e=system(("./trol-old < "+test_name+".in > "+test_name+".out").c_str());
 		cout << q << ": generated!\n";
 	}
 return 0;
