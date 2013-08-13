@@ -1,6 +1,6 @@
 CXX = g++
 TARG = test
-OBJS = test.o #unlint.o
+OBJS = test.o unlint.o
 CXXFLAGS = -s -O3
 HEADERS = ../unlint.hpp
 RM = rm -f
