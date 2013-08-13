@@ -1,31 +1,37 @@
-cpp=g++
-targ=test
-objects=test.o #unlint.o
-flags=-s -O3
-headers=../unlint.hpp
+CXX = g++
+TARG = test
+OBJS = test.o #unlint.o
+CXXFLAGS = -s -O3
+HEADERS = ../unlint.hpp
+RM = rm -f
 
-all: $(targ) gen cont spr trol
+.PHONY all clean
 
-$(targ): $(objects)
-	$(cpp) $(objects) $(flags) -o $(targ)
+all: $(TARG) gen cont spr trol
 
-unlint.o: ../unlint.cpp
-	$(cpp) ../unlint.cpp -c $(flags) -o unlint.o
+$(TARG): $(OBJS)
+	$(CXX) $(OBJS) $(CXXFLAGS) -o $(TARG)
 
-trol: trol.o unlint.o $(headers)
-	$(cpp) unlint.o trol.o $(flags) -o trol
+unlint.o: ../unlint.CXX
+	$(CXX) ../unlint.CXX -c $(CXXFLAGS) -o unlint.o
 
-trol.o: trol.cpp $(headers)
-	$(cpp) trol.cpp -c $(flags) -o trol.o
+trol: trol.o unlint.o $(HEADERS)
+	$(CXX) unlint.o trol.o $(CXXFLAGS) -o trol
 
-test.o: test.cpp $(headers)
-	$(cpp) test.cpp -c $(flags) -o test.o
+trol.o: trol.CXX $(HEADERS)
+	$(CXX) trol.CXX -c $(CXXFLAGS) -o trol.o
 
-gen: gen.cpp
-	$(cpp) gen.cpp $(flags) -o gen
+test.o: test.CXX $(HEADERS)
+	$(CXX) test.CXX -c $(CXXFLAGS) -o test.o
 
-spr: spr.cpp
-	$(cpp) spr.cpp $(flags) -o spr
+gen: gen.CXX
+	$(CXX) gen.CXX $(CXXFLAGS) -o gen
 
-cont: cont.cpp
-	$(cpp) cont.cpp $(flags) -o cont
+spr: spr.CXX
+	$(CXX) spr.CXX $(CXXFLAGS) -o spr
+
+cont: cont.CXX
+	$(CXX) cont.CXX $(CXXFLAGS) -o cont
+
+clean:
+	$(RM) *.o
