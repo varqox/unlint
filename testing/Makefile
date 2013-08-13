@@ -1,6 +1,6 @@
 cpp=g++
 targ=test
-objects=test.o #unlint.o
+objects=test.o unlint.o
 flags=-s -O3
 headers=../unlint.hpp
 
