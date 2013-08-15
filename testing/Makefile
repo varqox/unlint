@@ -1,15 +1,14 @@
 CXX = g++
-TARG = test
 OBJS = test.o unlint.o
 CXXFLAGS = -s -O3
 RM = rm -f
 
 .PHONY all clean
 
-all: $(TARG) gen cont spr trol
+all: test gen cont spr trol
 
-$(TARG): $(OBJS)
-	$(CXX) $(OBJS) $(CXXFLAGS) -o $(TARG)
+test: $(OBJS)
+	$(CXX) $(OBJS) $(CXXFLAGS) -o test
 
 unlint.o: ../unlint.cpp
 	$(CXX) ../unlint.cpp -c $(CXXFLAGS) -o unlint.o
