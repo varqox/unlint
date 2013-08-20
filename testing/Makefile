@@ -3,7 +3,7 @@ OBJS = test.o unlint.o
 CXXFLAGS = -s -O3
 RM = rm -f
 
-.PHONY all clean
+.PHONY: all clean
 
 all: test gen cont spr trol
 

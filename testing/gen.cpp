@@ -48,12 +48,12 @@ int main()
 		string in, in1, out, spr, test_name;
 		test_name="tests/unlint/"+to_string(q);
 		in+=static_cast<char>(rd()%9+'1');
-		for(int i=rd()%10000; i>=0; --i)
+		for(int i=rd()%100000; i>=0; --i)
 		{
 			in+=static_cast<char>(rd()%10+'0');
 		}
 		in1+=static_cast<char>(rd()%9+'1');
-		for(int i=rd()%10000; i>=0; --i)
+		for(int i=rd()%100000; i>=0; --i)
 		{
 			in1+=static_cast<char>(rd()%10+'0');
 		}
