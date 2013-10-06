@@ -905,7 +905,7 @@ namespace unlimited_int
 	}
 	/*---------------- UNLINT ----------------*/
 
-	unlint::unlint(): w(new num)
+	unlint::unlint(): z(true), w(new num)
 	{}
 
 	unlint::~unlint()
