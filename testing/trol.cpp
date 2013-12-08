@@ -1,5 +1,6 @@
 #include "../unlint.hpp"
 #include <iostream>
+#include "../../stream/allinone.cpp"
 
 using namespace std;
 

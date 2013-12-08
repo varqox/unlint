@@ -10,50 +10,6 @@ using namespace std;
 
 namespace unlimited_int
 {
-	typedef long long int lli;
-	const lli BASE=1000000000000000000LL, BS2=1000000000;
-	const char LEN=18;
-
-	class unlint::num
-	{
-	public:
-		struct fmod
-		{
-			lli pom1, pom2;
-			fmod(){}
-			~fmod(){}
-		};
-		std::vector<lli> w;
-		num(): w(1,0){}
-		~num(){}
-		num(const lli& _x): w(1,_x){}
-		num(const num& _n): w(_n.w){}
-		lli size() const;
-		void kas0();
-		void swap(num& _n){this->w.swap(_n.w);}
-		num& operator++();
-		num& operator--();
-		num& operator+=(const num&);
-		num& operator-=(const num&);
-		num& operator*=(const lli&);
-		void gen_mod(vector<fmod>&) const;
-		num& mult(const lli&, const vector<fmod>&);
-		void to_old_type(vector<int>&) const;
-		num& from_old_type(vector<int>&);
-		class FFT;
-		num& operator*=(const num&);
-		num& operator/=(const num&);
-		num& operator%=(const num&);
-		num& nwd(const num&);
-		num& pow(const num&);
-		bool operator<(const num&) const;
-		bool operator>(const num&) const;
-		bool operator<=(const num&) const;
-		bool operator>=(const num&) const;
-		bool operator==(const num&) const;
-		bool operator!=(const num&) const;
-	};
-
 	lli unlint::num::size() const
 	{
 		lli w=(this->w.size()-1)*LEN, end=this->w[this->w.size()-1];
@@ -1296,29 +1252,5 @@ namespace unlimited_int
 		unlint w(a);
 		w.factorial();
 	return w;
-	}
-
-	/* output unlint with ostream */
-	std::ostream& operator<<(std::ostream& os, const unlint& uli)
-	{
-		int ul=uli.w->w.size();
-		if(!uli.z) os << '-';
-		os << uli.w->w[--ul];
-		for(int i=--ul; i>=0; --i)
-		{
-			os.width(LEN);
-			os.fill('0');
-			os << uli.w->w[i];
-		}
-	return os;
-	}
-
-	/* input unlint with istream */
-	std::istream& operator>>(std::istream& is, unlint& uli)
-	{
-		std::string str;
-		is >> str;
-		uli=str;
-	return is;
 	}
 }
