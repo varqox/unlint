@@ -26,7 +26,7 @@ public:
 	num(const lli& _x): w(1,_x){}
 	num(const num& _n): w(_n.w){}
 	void kas0();
-	void swap(num& _n){this->w.swap(_n.w);}
+	void swap(num& _n){w.swap(_n.w);}
 	num& operator++();
 	num& operator--();
 	num& operator+=(const num&);
@@ -51,69 +51,69 @@ public:
 
 void /*unlint::*/num::kas0()
 {
-	vector<lli>::iterator i=this->w.end()-1;
-	while(i!=this->w.begin() && *i==0) --i;
+	vector<lli>::iterator i=w.end()-1;
+	while(i!=w.begin() && *i==0) --i;
 	++i;
-	this->w.erase(i, this->w.end());
+	w.erase(i, w.end());
 }
 
 
 num& /*unlint::*/num::operator++()
 {
-	vector<lli>::iterator i=this->w.begin();
-	while(i!=this->w.end())
+	vector<lli>::iterator i=w.begin();
+	while(i!=w.end())
 	{
 		++*i;
 		if(*i<BASE) return *this;
 		*i-=BASE;
 		++i;
 	}
-	this->w.push_back(1);
+	w.push_back(1);
 return *this;
 }
 
 num& /*unlint::*/num::operator--()
 {
-	vector<lli>::iterator i=this->w.begin();
-	while(i!=this->w.end())
+	vector<lli>::iterator i=w.begin();
+	while(i!=w.end())
 	{
 		--*i;
 		if(*i>=0) break;
 		*i+=BASE;
 		++i;
 	}
-	this->kas0();
+	kas0();
 return *this;
 }
 
 num& /*unlint::*/num::operator+=(const num& _n)
 {
 	int s=_n.w.size(), i=0;
-	if(s>this->w.size()) this->w.resize(s);
+	if(s>w.size()) w.resize(s);
 	bool add=false;
 	for(; i<s; ++i)
 	{
-		this->w[i]+=_n.w[i];
-		if(add) ++this->w[i];
-		if(this->w[i]>=BASE)
+		w[i]+=_n.w[i];
+		if(add) ++w[i];
+		if(w[i]>=BASE)
 		{
-			this->w[i]-=BASE;
+			w[i]-=BASE;
 			add=true;
 		}
 		else add=false;
 	}
 	if(add)
 	{
-		if(i==s) this->w.push_back(add);
+		if(i==s) w.push_back(add);
 		else
 		{
 			for(;i<s; ++i)
 			{
-				++this->w[i];
-				if(this->w[i]<BASE) break;
-				this->w[i]-=BASE;
+				++w[i];
+				if(w[i]<BASE) break;
+				w[i]-=BASE;
 			}
-			if(i==s) this->w.push_back(add);
+			if(i==s) w.push_back(add);
 		}
 	}
 return *this;
@@ -125,34 +125,34 @@ num& /*unlint::*/num::operator-=(const num& _n)
 	bool add=false;
 	for(; i<s; ++i)
 	{
-		this->w[i]-=_n.w[i];
-		if(add) --this->w[i];
-		if(this->w[i]<0)
+		w[i]-=_n.w[i];
+		if(add) --w[i];
+		if(w[i]<0)
 		{
-			this->w[i]+=BASE;
+			w[i]+=BASE;
 			add=true;
 		}
 		else add=false;
 	}
 	if(add)
 	{
-		s=this->w.size();
+		s=w.size();
 		for(;i<s; ++i)
 		{
-			--this->w[i];
-			if(this->w[i]>=0) break;
-			this->w[i]+=BASE;
+			--w[i];
+			if(w[i]>=0) break;
+			w[i]+=BASE;
 		}
 	}
-	this->kas0();
+	kas0();
 return *this;
 }
 
 num& /*unlint::*/num::operator*=(const lli& _lcb)
 {
-	if(_lcb==0){vector<lli>(1).swap(this->w);return *this;}
+	if(_lcb==0){vector<lli>(1).swap(w);return *this;}
 	lli p1=_lcb/BS2, p2=_lcb-p1*BS2, add=0, pom1, pom2, pom3, add1;
-	for(vector<lli>::iterator i=this->w.begin(); i!=this->w.end(); ++i)
+	for(vector<lli>::iterator i=w.begin(); i!=w.end(); ++i)
 	{
 		pom1=*i/BS2;
 		pom2=*i-pom1*BS2;
@@ -169,43 +169,43 @@ num& /*unlint::*/num::operator*=(const lli& _lcb)
 		}
 		add+=pom3+pom1*p1;
 	}
-	if(add) this->w.push_back(add);
+	if(add) w.push_back(add);
 return *this;
 }
 
 void /*unlint::*/num::gen_mod(vector<num::fmod>& _k) const
 {
-	int wl=this->w.size();
+	int wl=w.size();
 	_k.resize(wl);
 	for(int i=0; i<wl; ++i)
 	{
-		_k[i].pom1=this->w[i]/BS2;
-		_k[i].pom2=this->w[i]-_k[i].pom1*BS2;
+		_k[i].pom1=w[i]/BS2;
+		_k[i].pom2=w[i]-_k[i].pom1*BS2;
 	}
 }
 
 num& /*unlint::*/num::mult(const lli& _lcb, const vector<num::fmod>& _t)
 {
-	if(_lcb==0){vector<lli>(1).swap(this->w);return *this;}
+	if(_lcb==0){vector<lli>(1).swap(w);return *this;}
 	int tl=_t.size();
-	this->w.resize(tl);
+	w.resize(tl);
 	lli p1=_lcb/BS2, p2=_lcb-p1*BS2, add=0, pom3, add1;
 	for(int i=0; i<tl; ++i)
 	{
-		this->w[i]=add+p2*_t[i].pom2;
+		w[i]=add+p2*_t[i].pom2;
 		add1=add=0;
-		if(this->w[i]>=BASE){++add;this->w[i]-=BASE;}
+		if(w[i]>=BASE){++add;w[i]-=BASE;}
 		add1=_t[i].pom1*p2+_t[i].pom2*p1;
 		pom3=add1/BS2;
-		this->w[i]+=(add1-pom3*BS2)*BS2;
-		while(this->w[i]>=BASE)
+		w[i]+=(add1-pom3*BS2)*BS2;
+		while(w[i]>=BASE)
 		{
 			++add;
-			this->w[i]-=BASE;
+			w[i]-=BASE;
 		}
 		add+=pom3+_t[i].pom1*p1;
 	}
-	if(add) this->w.push_back(add);
+	if(add) w.push_back(add);
 return *this;
 }
 
@@ -219,12 +219,12 @@ void old_kas0(vector<int>& _n)
 
 void num::to_old_type(vector<int>& _n) const
 {
-	int wl=this->w.size();
+	int wl=w.size();
 	_n.resize(wl<<1);
 	for(int i=0; i<wl; ++i)
 	{
-		_n[i<<1]=this->w[i]/BS2;
-		_n[1+i<<1]=this->w[i]-_n[i<<1]*BS2;
+		_n[i<<1]=w[i]/BS2;
+		_n[1+i<<1]=w[i]-_n[i<<1]*BS2;
 	}
 	old_kas0(_n);
 }
@@ -232,7 +232,7 @@ void num::to_old_type(vector<int>& _n) const
 num& num::from_old_type(vector<int>& _n) const
 {
 	int nl=_n.size();
-	this->w.resize((1+nl)>>1);
+	w.resize((1+nl)>>1);
 	for(int i=0; i<nl; i+=2)
 		w[i>>1]=_n[i];
 	for(int i=1; i<nl; i+=2)
@@ -246,7 +246,7 @@ num& /*unlint::*/num::operator*=(const num& b)
 	lli bl=b.w.size();
 	vector<num::fmod> t;
 	b.gen_mod(t);
-	for(int q=0; q<this->w.size(); ++q)
+	for(int q=0; q<w.size(); ++q)
 	{
 		_n.mult(w[q], t);
 		//k.w.insert(k.w.begin(),i,0);
@@ -280,8 +280,8 @@ num& /*unlint::*/num::operator*=(const num& b)
 			}
 		}
 	}
-	this->swap(lol);
-	this->kas0();
+	swap(lol);
+	kas0();
 return *this;
 }
 
@@ -511,13 +511,13 @@ void mod(vector<int>& a, vector<int>& b)
 
 num& /*unlint*/num::operator/=(const num& _n)
 {
-	if(this->operator<(_n))
+	if(operator<(_n))
 	{
-		vector<lli>(1,0).swap(this->w);
+		vector<lli>(1,0).swap(w);
 		return *this;
 	}
 	else if(_n.w.size()==1 && _n.w[0]==1) return *this;
-	int wl=this->w.size(), nl=_n.w.size(), iws=wl-nl;
+	int wl=w.size(), nl=_n.w.size(), iws=wl-nl;
 	vector<num::fmod> nmd;
 	_n.gen_mod(nmd);
 	num k, w;
@@ -530,9 +530,9 @@ num& /*unlint*/num::operator/=(const num& _n)
 		else
 		{
 			int i=nl-1;
-			while(i>=0 && this->w[i+iws]==_n.w[i])
+			while(i>=0 && w[i+iws]==_n.w[i])
 				--i;
-			if(i<0 || this->w[i+iws]>_n.w[i]) is_grader=true;
+			if(i<0 || w[i+iws]>_n.w[i]) is_grader=true;
 			else is_grader=false;
 		}
 		if(is_grader)
@@ -548,10 +548,10 @@ num& /*unlint*/num::operator/=(const num& _n)
 				else
 				{
 					int i=kl-1;
-					while(i>=0 && this->w[i+iws]==k.w[i])
+					while(i>=0 && w[i+iws]==k.w[i])
 						--i;
 					if(i<0) is_grader=false;
-					else if(k.w[i]>this->w[i+iws]) is_grader=true;
+					else if(k.w[i]>w[i+iws]) is_grader=true;
 					else is_grader=false;
 				}
 				if(is_grader) up=--mean;
@@ -562,46 +562,46 @@ num& /*unlint*/num::operator/=(const num& _n)
 			bool add=0;
 			for(int i=0; i<gl; ++i)
 			{
-				this->w[i+iws]-=k.w[i];
-				if(add) --this->w[i+iws];
-				if(this->w[i+iws]<0)
+				w[i+iws]-=k.w[i];
+				if(add) --w[i+iws];
+				if(w[i+iws]<0)
 				{
-					this->w[i+iws]+=BASE;
+					w[i+iws]+=BASE;
 					add=true;
 				}
 				else add=false;
 			}
 			for(int i=gl+iws; i<wl; ++i)
 			{
-				if(add) --this->w[i];
-				if(this->w[i]<0)
+				if(add) --w[i];
+				if(w[i]<0)
 				{
-					this->w[i]+=BASE;
+					w[i]+=BASE;
 					add=true;
 				}
 				else break;
 			}
-			this->kas0();
-			wl=this->w.size();
+			kas0();
+			wl=w.size();
 			w.w[iws]=down;
 		}
 		--iws;
 	}
 	w.kas0();
-	this->swap(w);
+	swap(w);
 return *this;
 }
 
 num& /*unlint*/num::operator%=(const num& _n)
 {
-	if(this->operator<(_n))
+	if(operator<(_n))
 		return *this;
 	else if(_n.w.size()==1 && _n.w[0]==1)
 	{
-		vector<lli>(1,0).swap(this->w);
+		vector<lli>(1,0).swap(w);
 		return *this;
 	}
-	int wl=this->w.size(), nl=_n.w.size(), iws=wl-nl;
+	int wl=w.size(), nl=_n.w.size(), iws=wl-nl;
 	vector<num::fmod> nmd;
 	_n.gen_mod(nmd);
 	num k;
@@ -613,9 +613,9 @@ num& /*unlint*/num::operator%=(const num& _n)
 		else
 		{
 			int i=nl-1;
-			while(i>=0 && this->w[i+iws]==_n.w[i])
+			while(i>=0 && w[i+iws]==_n.w[i])
 				--i;
-			if(i<0 || this->w[i+iws]>_n.w[i]) is_grader=true;
+			if(i<0 || w[i+iws]>_n.w[i]) is_grader=true;
 			else is_grader=false;
 		}
 		if(is_grader)
@@ -631,10 +631,10 @@ num& /*unlint*/num::operator%=(const num& _n)
 				else
 				{
 					int i=kl-1;
-					while(i>=0 && this->w[i+iws]==k.w[i])
+					while(i>=0 && w[i+iws]==k.w[i])
 						--i;
 					if(i<0) is_grader=false;
-					else if(k.w[i]>this->w[i+iws]) is_grader=true;
+					else if(k.w[i]>w[i+iws]) is_grader=true;
 					else is_grader=false;
 				}
 				if(is_grader) up=--mean;
@@ -645,27 +645,27 @@ num& /*unlint*/num::operator%=(const num& _n)
 			bool add=0;
 			for(int i=0; i<gl; ++i)
 			{
-				this->w[i+iws]-=k.w[i];
-				if(add) --this->w[i+iws];
-				if(this->w[i+iws]<0)
+				w[i+iws]-=k.w[i];
+				if(add) --w[i+iws];
+				if(w[i+iws]<0)
 				{
-					this->w[i+iws]+=BASE;
+					w[i+iws]+=BASE;
 					add=true;
 				}
 				else add=false;
 			}
 			for(int i=gl+iws; i<wl; ++i)
 			{
-				if(add) --this->w[i];
-				if(this->w[i]<0)
+				if(add) --w[i];
+				if(w[i]<0)
 				{
-					this->w[i]+=BASE;
+					w[i]+=BASE;
 					add=true;
 				}
 				else break;
 			}
-			this->kas0();
-			wl=this->w.size();
+			kas0();
+			wl=w.size();
 		}
 		--iws;
 	}
@@ -682,21 +682,21 @@ void /*unlint::*/num::nwd(const num& _n)
 	{
 		c.swap(*this);
 		c%=b;
-		this->swap(b);
+		swap(b);
 		b.swap(c);
 	}
 }
 
 bool /*unlint::*/num::operator<(const num& _n) const
 {
-	int i=this->w.size();
+	int i=w.size();
 	if(i<_n.w.size()) return true;
 	else if(i>_n.w.size()) return false;
 	--i;
-	while(i>=0 && this->w[i]==_n.w[i])
+	while(i>=0 && w[i]==_n.w[i])
 		--i;
 	if(i<0) return false;
-	if(this->w[i]>_n.w[i]) return false;
+	if(w[i]>_n.w[i]) return false;
 return true;
 }
 
@@ -712,15 +712,15 @@ return !(_n<*this);
 
 bool /*unlint::*/num::operator>=(const num& _n) const
 {
-return !this->operator<(_n);
+return !operator<(_n);
 }
 
 bool /*unlint::*/num::operator==(const num& _n) const
 {
-	int i=this->w.size();
+	int i=w.size();
 	if(i!=_n.w.size()) return false;
 	--i;
-	while(i>=0 && this->w[i]==_n.w[i])
+	while(i>=0 && w[i]==_n.w[i])
 		--i;
 	if(i<0) return true;
 return false;
@@ -728,7 +728,7 @@ return false;
 
 bool /*unlint::*/num::operator!=(const num& _n) const
 {
-return !this->operator==(_n);
+return !operator==(_n);
 }
 
 void echo(const num& a)
@@ -774,10 +774,10 @@ public:
 
 void lol::kas0()
 {
-	vector<char>::iterator i=this->w.end()-1;
-	while(i!=this->w.begin() && *i==0) --i;
+	vector<char>::iterator i=w.end()-1;
+	while(i!=w.begin() && *i==0) --i;
 	++i;
-	this->w.erase(i, this->w.end());
+	w.erase(i, w.end());
 }
 
 void lol::get()
@@ -785,20 +785,20 @@ void lol::get()
 	string a;
 	cin >> a;
 	w.resize(a.size());
-	vector<char>::iterator wi=this->w.begin();
+	vector<char>::iterator wi=w.begin();
 	for(int i=a.size()-1; i>=0; --i,++wi)
 		*wi=a[i]-'0';
 }
 
 void lol::echo()
 {
-	for(int i=this->w.size()-1; i>=0; --i)
-		cout << static_cast<char>(this->w[i]+'0');
+	for(int i=w.size()-1; i>=0; --i)
+		cout << static_cast<char>(w[i]+'0');
 }
 
 lol& lol::operator%=(const lol& _n)
 {
-	int nl=_n.w.size(), wl=this->w.size(), iws=wl-nl;
+	int nl=_n.w.size(), wl=w.size(), iws=wl-nl;
 	vector<char> tab[10];
 	tab[1]=_n.w;
 	for(int i=2; i<10; ++i)
@@ -821,9 +821,9 @@ lol& lol::operator%=(const lol& _n)
 		else
 		{
 			int i=nl-1;
-			while(i>=0 && this->w[i+iws]==_n.w[i])
+			while(i>=0 && w[i+iws]==_n.w[i])
 				--i;
-			if(i<0 || this->w[i+iws]>_n.w[i]) is_grader=true;
+			if(i<0 || w[i+iws]>_n.w[i]) is_grader=true;
 			else is_grader=false;
 		}
 		if(is_grader)
@@ -838,10 +838,10 @@ lol& lol::operator%=(const lol& _n)
 				else
 				{
 					int i=kl-1;
-					while(i>=0 && this->w[i+iws]==tab[mean][i])
+					while(i>=0 && w[i+iws]==tab[mean][i])
 						--i;
 					if(i<0) is_grader=false;
-					else if(tab[mean][i]>this->w[i+iws]) is_grader=true;
+					else if(tab[mean][i]>w[i+iws]) is_grader=true;
 					else is_grader=false;
 				}
 				if(is_grader) up=--mean;
@@ -851,27 +851,27 @@ lol& lol::operator%=(const lol& _n)
 			bool add=false;
 			for(int i=0; i<gl; ++i)
 			{
-				this->w[i+iws]-=tab[up][i];
-				if(add) --this->w[i+iws];
-				if(this->w[i+iws]<0)
+				w[i+iws]-=tab[up][i];
+				if(add) --w[i+iws];
+				if(w[i+iws]<0)
 				{
-					this->w[i+iws]+=10;
+					w[i+iws]+=10;
 					add=true;
 				}
 				else add=false;
 			}
 			for(int i=gl+iws; i<wl; ++i)
 			{
-				if(add) --this->w[i];
-				if(this->w[i]<0)
+				if(add) --w[i];
+				if(w[i]<0)
 				{
-					this->w[i]+=10;
+					w[i]+=10;
 					add=true;
 				}
 				else break;
 			}
-			this->kas0();
-			wl=this->w.size();
+			kas0();
+			wl=w.size();
 		}
 		--iws;
 	}

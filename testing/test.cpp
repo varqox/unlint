@@ -24,7 +24,7 @@ public:
 	num(const lli& _x): w(1,_x){}
 	num(const num& _n): w(_n.w){}
 	void kas0();
-	void swap(num& _n){this->w.swap(_n.w);}
+	void swap(num& _n){w.swap(_n.w);}
 	num& operator++();
 	num& operator--();
 	num& operator+=(const num&);
@@ -49,68 +49,68 @@ public:
 
 void /*unlint::*/num::kas0()
 {
-	vector<lli>::iterator i=this->w.end()-1;
-	while(i!=this->w.begin() && *i==0) --i;
+	vector<lli>::iterator i=w.end()-1;
+	while(i!=w.begin() && *i==0) --i;
 	++i;
-	this->w.erase(i, this->w.end());
+	w.erase(i, w.end());
 }
 
 num& /*unlint::*/num::operator++()
 {
-	vector<lli>::iterator i=this->w.begin();
-	while(i!=this->w.end())
+	vector<lli>::iterator i=w.begin();
+	while(i!=w.end())
 	{
 		++*i;
 		if(*i<BASE) return *this;
 		*i-=BASE;
 		++i;
 	}
-	this->w.push_back(1);
+	w.push_back(1);
 return *this;
 }
 
 num& /*unlint::*/num::operator--()
 {
-	vector<lli>::iterator i=this->w.begin();
-	while(i!=this->w.end())
+	vector<lli>::iterator i=w.begin();
+	while(i!=w.end())
 	{
 		--*i;
 		if(*i>=0) break;
 		*i+=BASE;
 		++i;
 	}
-	this->kas0();
+	kas0();
 return *this;
 }
 
 num& /*unlint::*/num::operator+=(const num& _n)
 {
 	int s=_n.w.size(), i=0;
-	if(s>this->w.size()) this->w.resize(s);
+	if(s>w.size()) w.resize(s);
 	bool add=false;
 	for(; i<s; ++i)
 	{
-		this->w[i]+=_n.w[i];
-		if(add) ++this->w[i];
-		if(this->w[i]>=BASE)
+		w[i]+=_n.w[i];
+		if(add) ++w[i];
+		if(w[i]>=BASE)
 		{
-			this->w[i]-=BASE;
+			w[i]-=BASE;
 			add=true;
 		}
 		else add=false;
 	}
 	if(add)
 	{
-		if(i==this->w.size()) this->w.push_back(add);
+		if(i==w.size()) w.push_back(add);
 		else
 		{
-			for(;i<this->w.size(); ++i)
+			for(;i<w.size(); ++i)
 			{
-				++this->w[i];
-				if(this->w[i]<BASE) break;
-				this->w[i]-=BASE;
+				++w[i];
+				if(w[i]<BASE) break;
+				w[i]-=BASE;
 			}
-			if(i==this->w.size()) this->w.push_back(add);
+			if(i==w.size()) w.push_back(add);
 		}
 	}
 return *this;
@@ -122,34 +122,34 @@ num& /*unlint::*/num::operator-=(const num& _n)
 	bool add=false;
 	for(; i<s; ++i)
 	{
-		this->w[i]-=_n.w[i];
-		if(add) --this->w[i];
-		if(this->w[i]<0)
+		w[i]-=_n.w[i];
+		if(add) --w[i];
+		if(w[i]<0)
 		{
-			this->w[i]+=BASE;
+			w[i]+=BASE;
 			add=true;
 		}
 		else add=false;
 	}
 	if(add)
 	{
-		s=this->w.size();
+		s=w.size();
 		for(;i<s; ++i)
 		{
-			--this->w[i];
-			if(this->w[i]>=0) break;
-			this->w[i]+=BASE;
+			--w[i];
+			if(w[i]>=0) break;
+			w[i]+=BASE;
 		}
 	}
-	this->kas0();
+	kas0();
 return *this;
 }
 
 num& /*unlint::*/num::operator*=(const lli& _lcb)
 {
-	if(_lcb==0){vector<lli>(1).swap(this->w);return *this;}
+	if(_lcb==0){vector<lli>(1).swap(w);return *this;}
 	lli p1=_lcb/BS2, p2=_lcb-p1*BS2, add=0, pom1, pom2, pom3, add1;
-	for(vector<lli>::iterator i=this->w.begin(); i!=this->w.end(); ++i)
+	for(vector<lli>::iterator i=w.begin(); i!=w.end(); ++i)
 	{
 		pom1=*i/BS2;
 		pom2=*i-pom1*BS2;
@@ -166,43 +166,43 @@ num& /*unlint::*/num::operator*=(const lli& _lcb)
 		}
 		add+=pom3+pom1*p1;
 	}
-	if(add) this->w.push_back(add);
+	if(add) w.push_back(add);
 return *this;
 }
 
 void /*unlint::*/num::gen_mod(vector<num::fmod>& _k) const
 {
-	int wl=this->w.size();
+	int wl=w.size();
 	_k.resize(wl);
 	for(int i=0; i<wl; ++i)
 	{
-		_k[i].pom1=this->w[i]/BS2;
-		_k[i].pom2=this->w[i]-_k[i].pom1*BS2;
+		_k[i].pom1=w[i]/BS2;
+		_k[i].pom2=w[i]-_k[i].pom1*BS2;
 	}
 }
 
 num& /*unlint::*/num::mult(const lli& _lcb, const vector<num::fmod>& _t)
 {
-	if(_lcb==0){vector<lli>(1).swap(this->w);return *this;}
+	if(_lcb==0){vector<lli>(1).swap(w);return *this;}
 	int tl=_t.size();
-	this->w.resize(tl);
+	w.resize(tl);
 	lli p1=_lcb/BS2, p2=_lcb-p1*BS2, add=0, pom3, add1;
 	for(int i=0; i<tl; ++i)
 	{
-		this->w[i]=add+p2*_t[i].pom2;
+		w[i]=add+p2*_t[i].pom2;
 		add1=add=0;
-		if(this->w[i]>=BASE){++add;this->w[i]-=BASE;}
+		if(w[i]>=BASE){++add;w[i]-=BASE;}
 		add1=_t[i].pom1*p2+_t[i].pom2*p1;
 		pom3=add1/BS2;
-		this->w[i]+=(add1-pom3*BS2)*BS2;
-		while(this->w[i]>=BASE)
+		w[i]+=(add1-pom3*BS2)*BS2;
+		while(w[i]>=BASE)
 		{
 			++add;
-			this->w[i]-=BASE;
+			w[i]-=BASE;
 		}
 		add+=pom3+_t[i].pom1*p1;
 	}
-	if(add) this->w.push_back(add);
+	if(add) w.push_back(add);
 return *this;
 }
 
@@ -216,12 +216,12 @@ void old_kas0(vector<int>& _n)
 
 void num::to_old_type(vector<int>& _n) const
 {
-	int wl=this->w.size();
+	int wl=w.size();
 	_n.resize(wl<<1);
 	for(int i=0; i<wl; ++i)
 	{
-		_n[(i<<1)+1]=this->w[i]/BS2;
-		_n[(i<<1)]=this->w[i]-_n[(i<<1)+1]*BS2;
+		_n[(i<<1)+1]=w[i]/BS2;
+		_n[(i<<1)]=w[i]-_n[(i<<1)+1]*BS2;
 	}
 	old_kas0(_n);
 }
@@ -229,7 +229,7 @@ void num::to_old_type(vector<int>& _n) const
 num& num::from_old_type(vector<int>& _n)
 {
 	int nl=_n.size();
-	this->w.resize((nl+1)>>1);
+	w.resize((nl+1)>>1);
 	for(int i=0; i<nl; i+=2)
 		w[i>>1]=_n[i];
 	for(int i=1; i<nl; i+=2)
@@ -243,7 +243,7 @@ num& /*unlint::*/num::operator*=(const num& b)
 	lli bl=b.w.size();
 	vector<num::fmod> t;
 	b.gen_mod(t);
-	for(int q=0; q<this->w.size(); ++q)
+	for(int q=0; q<w.size(); ++q)
 	{
 		_n.mult(w[q], t);
 		//k.w.insert(k.w.begin(),i,0);
@@ -277,8 +277,8 @@ num& /*unlint::*/num::operator*=(const num& b)
 			}
 		}
 	}
-	this->swap(lol);
-	this->kas0();
+	swap(lol);
+	kas0();
 return *this;
 }
 
@@ -511,27 +511,27 @@ void mod(vector<int>& a, vector<int>& b)
 num& /*unlint*/num::operator/=(const num& _n)
 {
 	vector<int> a,b;
-	this->to_old_type(a);
+	to_old_type(a);
 	_n.to_old_type(b);
 	div(a,b);
-	this->from_old_type(a);
+	from_old_type(a);
 return *this;
 }
 
 num& /*unlint*/num::operator%=(const num& _n)
 {
 	vector<int> a,b;
-	this->to_old_type(a);
+	to_old_type(a);
 	_n.to_old_type(b);
 	mod(a,b);
-	this->from_old_type(a);
+	from_old_type(a);
 return *this;
 }
 
 num& /*unlint::*/num::nwd(const num& _n)
 {
 	vector<int> a, b, c;
-	this->to_old_type(a);
+	to_old_type(a);
 	_n.to_old_type(b);
 	while(!(b.size()==1 && b[0]==0))
 	{
@@ -542,7 +542,7 @@ num& /*unlint::*/num::nwd(const num& _n)
 	}
 	vector<int>().swap(b);
 	vector<int>().swap(c);
-	this->from_old_type(a);
+	from_old_type(a);
 return *this;
 }
 
@@ -550,7 +550,7 @@ num& num::pow(const num& _n)
 {
 	if(_n.w.size()==1 && _n.w[0]==0)
 	{
-		vector<lli>(1,1).swap(this->w);
+		vector<lli>(1,1).swap(w);
 		return *this;
 	}
 	vector<lli> k(_n.w);
@@ -571,8 +571,8 @@ num& num::pow(const num& _n)
 	}
 	while(!bin.empty())
 	{
-		this->operator*=(*this);
-		if(bin.top()) this->operator*=(pow1);
+		operator*=(*this);
+		if(bin.top()) operator*=(pow1);
 		bin.pop();
 	}
 return *this;
@@ -580,14 +580,14 @@ return *this;
 
 bool /*unlint::*/num::operator<(const num& _n) const
 {
-	int i=this->w.size();
+	int i=w.size();
 	if(i<_n.w.size()) return true;
 	else if(i>_n.w.size()) return false;
 	--i;
-	while(i>=0 && this->w[i]==_n.w[i])
+	while(i>=0 && w[i]==_n.w[i])
 		--i;
 	if(i<0) return false;
-	if(this->w[i]>_n.w[i]) return false;
+	if(w[i]>_n.w[i]) return false;
 return true;
 }
 
@@ -603,15 +603,15 @@ return !(_n<*this);
 
 bool /*unlint::*/num::operator>=(const num& _n) const
 {
-return !this->operator<(_n);
+return !operator<(_n);
 }
 
 bool /*unlint::*/num::operator==(const num& _n) const
 {
-	int i=this->w.size();
+	int i=w.size();
 	if(i!=_n.w.size()) return false;
 	--i;
-	while(i>=0 && this->w[i]==_n.w[i])
+	while(i>=0 && w[i]==_n.w[i])
 		--i;
 	if(i<0) return true;
 return false;
@@ -619,7 +619,7 @@ return false;
 
 bool /*unlint::*/num::operator!=(const num& _n) const
 {
-return !this->operator==(_n);
+return !operator==(_n);
 }
 
 void echo(const num& a)

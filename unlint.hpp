@@ -36,7 +36,7 @@ namespace unlimited_int
 			num(const num& _n): w(_n.w){}
 			lli size() const;
 			void kas0();
-			void swap(num& _n){this->w.swap(_n.w);}
+			void swap(num& _n){w.swap(_n.w);}
 			num& operator++();
 			num& operator--();
 			num& operator+=(const num&);

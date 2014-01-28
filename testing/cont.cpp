@@ -1141,7 +1141,7 @@ inline void unlint::pow(unlint b)
         int bins=bin.size();
         for(int ir=bins-1; ir>=0; ir--)
         {
-            this->operator*=(*this);
+            operator*=(*this);
             if(bin[ir]) operator*=(wk);
         }
     }
